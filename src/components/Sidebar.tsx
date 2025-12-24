@@ -46,7 +46,7 @@ export async function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-nav-title">Índice</div>
+
       <SidebarContent tree={tree} />
     </aside>
   )

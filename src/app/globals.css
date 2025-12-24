@@ -120,23 +120,23 @@ a {
   margin-bottom: 16px;
 }
 
-/* Depth 0: Parts */
+/* Depth 0: Parts (Largest) */
 .section-label.depth-0 {
   display: block;
   width: 100%;
   text-align: left;
   background: none;
   border: none;
-  padding: 8px 32px;
+  padding: 12px 32px 8px; /* Added spacing */
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 16px; /* Increased from 11px */
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   color: var(--text-secondary);
-  font-weight: 700;
+  font-weight: 800; /* Boldest */
 }
 
-/* Depth 1: Chapters */
+/* Depth 1: Chapters (Medium) */
 .section-label.depth-1 {
   display: flex;
   justify-content: space-between;
@@ -146,7 +146,7 @@ a {
   border: none;
   padding: 10px 32px;
   font-family: var(--font-serif);
-  font-size: 16px;
+  font-size: 15px; /* Slightly smaller than Part */
   color: var(--text-primary);
   cursor: pointer;
   transition: var(--transition-normal);
