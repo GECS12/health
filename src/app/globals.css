@@ -706,7 +706,7 @@ a {
 .back-to-top {
   position: fixed;
   bottom: 40px;
-  right: calc(50% - 460px); /* Positioned relative to article center */
+  right: calc(var(--toc-width) / 2 - 22px); /* Centered in TOC sidebar to avoid article overlap */
   width: 44px;
   height: 44px;
   background: var(--bg-color);
@@ -727,12 +727,6 @@ a {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   background: var(--active-bg);
-}
-
-@media (max-width: 1400px) {
-  .back-to-top {
-    right: 32px; /* Fallback for smaller desktop */
-  }
 }
 
 @media (max-width: 1024px) {
