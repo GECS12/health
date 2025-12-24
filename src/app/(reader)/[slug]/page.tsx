@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, Edit2 } from 'lucide-react'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { getFlattenedArticles } from '@/lib/navigation'
 import { ScrollReveal } from '@/components/ScrollReveal'
+import { Comments } from '@/components/Comments'
 
 interface ArticleProps {
   params: Promise<{ slug: string }>;
@@ -111,6 +112,8 @@ export default async function ArticlePage({ params }: ArticleProps) {
             </div>
           </section>
         )}
+
+        <Comments postId={article._id} />
         
         <nav className="article-footer-nav">
           <div className="footer-nav-grid">
