@@ -1,5 +1,2 @@
 # Handle Sanity Studio client-side routing
 /admin/*  /admin/index.html  200
-
-# Fallback to index for common SPA routing if needed (optional but helpful)
-/*  /index.html  200
