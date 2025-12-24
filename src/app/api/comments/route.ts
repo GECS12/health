@@ -1,5 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { client } from '@/lib/sanity'
+import { createClient } from 'next-sanity'
+
+// Create a write-enabled client for API routes
+const writeClient = createClient({
+  projectId: 'd8l1kuhs',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: false,
+  token: process.env.SANITY_API_TOKEN, // Optional: add token for write access if needed
+})
+
+// Read-only client for fetching
+const readClient = createClient({
+  projectId: 'd8l1kuhs',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: false,
+})
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,7 +60,7 @@ export async function POST(request: NextRequest) {
       }),
     }
 
-    const result = await client.create(comment)
+    const result = await writeClient.create(comment)
 
     return NextResponse.json(
       { 
@@ -53,10 +70,14 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating comment:', error)
+    const errorMessage = error?.message || 'Failed to submit comment'
     return NextResponse.json(
-      { error: 'Failed to submit comment' },
+      { 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? error?.stack : undefined
+      },
       { status: 500 }
     )
   }
@@ -75,7 +96,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch approved comments for this post
-    const comments = await client.fetch(`
+    const comments = await readClient.fetch(`
       *[_type == "comment" && post._ref == $postId && approved == true] | order(createdAt asc) {
         _id,
         author,

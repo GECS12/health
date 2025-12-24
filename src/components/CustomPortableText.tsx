@@ -45,19 +45,37 @@ const CitationsWrapper = ({ children }: { children: any }) => {
 
 const components: PortableTextComponents = {
   types: {
-    image: ({ value }) => {
+    image: ({ value, isInline }) => {
       if (!value?.asset?._ref && !value?.asset?._id) {
         return null
       }
+      
+      // Get image URL with dimensions
+      const imageUrl = urlFor(value).url()
+      
+      // Extract dimensions from asset reference
+      // Format: image-{hash}-{width}x{height}-{format}
+      const assetRef = value.asset?._ref || value.asset?._id || ''
+      const dimensionsMatch = assetRef.match(/-(\d+)x(\d+)-/)
+      
+      // Use actual dimensions if available, otherwise use reasonable defaults
+      const width = dimensionsMatch ? parseInt(dimensionsMatch[1]) : 1200
+      const height = dimensionsMatch ? parseInt(dimensionsMatch[2]) : 800
+      
       return (
         <figure className="my-10 text-center">
           <Image
-            src={urlFor(value).url()}
+            src={imageUrl}
             alt={value.alt || 'article image'}
-            width={800}
-            height={500}
+            width={width}
+            height={height}
             className="rounded-lg shadow-sm mx-auto"
-            style={{ maxWidth: '100%', height: 'auto' }}
+            style={{ 
+              maxWidth: '100%', 
+              height: 'auto'
+            }}
+            loading={isInline ? 'lazy' : 'eager'}
+            priority={!isInline}
           />
           {value.caption && (
             <figcaption className="mt-4 text-sm text-gray-500 italic">
