@@ -4,13 +4,34 @@ import React from 'react'
 import {DocxImporter} from '../src/studio/DocxImporter'
 
 const CenteredStyle = (props: any) => (
-  <div style={{textAlign: 'center'}}>{props.children}</div>
+  <div style={{
+    textAlign: 'center',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+    color: 'inherit'
+  }}>{props.children}</div>
 )
 const RightStyle = (props: any) => (
-  <div style={{textAlign: 'right'}}>{props.children}</div>
+  <div style={{
+    textAlign: 'right',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+    color: 'inherit'
+  }}>{props.children}</div>
 )
 const JustifyStyle = (props: any) => (
-  <div style={{textAlign: 'justify'}}>{props.children}</div>
+  <div style={{
+    textAlign: 'justify',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+    color: 'inherit'
+  }}>{props.children}</div>
 )
 
 // Text Color Decorator
@@ -77,9 +98,6 @@ export const postType = defineType({
             {title: 'H2', value: 'h2'},
             {title: 'H3', value: 'h3'},
             {title: 'Quote', value: 'blockquote'},
-            {title: 'Centered', value: 'centered', component: CenteredStyle},
-            {title: 'Right', value: 'text-right', component: RightStyle},
-            {title: 'Justify', value: 'text-justify', component: JustifyStyle},
           ],
           lists: [{title: 'Bullet', value: 'bullet'}, {title: 'Number', value: 'number'}],
           marks: {
