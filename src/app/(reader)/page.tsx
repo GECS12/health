@@ -4,13 +4,25 @@ import { CustomPortableText } from '../../components/CustomPortableText'
 export const revalidate = 0
 
 export default async function Home() {
-  // Fetch the first article to show as home
-  const article = await client.fetch(`
-    *[_type == "post"] | order(order asc) [0] {
-      title,
-      body
-    }
-  `)
+  let article = null
+
+  try {
+    // Fetch the first article to show as home
+    article = await client.fetch(`
+      *[_type == "post"] | order(order asc) [0] {
+        title,
+        body
+      }
+    `)
+  } catch (error) {
+    console.error('Sanity fetch error:', error)
+    return (
+      <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--text-secondary)' }}>
+        <h2>Serviço Indisponível</h2>
+        <p>Não foi possível carregar o conteúdo no momento. Por favor, tente recarregar a página.</p>
+      </div>
+    )
+  }
 
   if (!article) {
     return (

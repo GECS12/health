@@ -3,10 +3,10 @@ import { CustomPortableText } from '../../../components/CustomPortableText'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { PageTransition } from '@/components/PageTransition'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Edit2 } from 'lucide-react'
 
 interface ArticleProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }
 
 export const dynamicParams = true
@@ -62,19 +62,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
     <PageTransition>
       <article className="article-container">
         <header className="article-header">
-           <div className="article-meta-top">
-              {article.section?.title || 'Capítulo'}
-           </div>
            <h1 className="article-title">{article.title}</h1>
-           <div className="article-metadata-row">
-             <span className="metadata-item">
-               {readingTime} min de leitura
-             </span>
-             <span className="metadata-divider">/</span>
-             <span className="metadata-item">
-               Artigo Científico
-             </span>
-           </div>
            <div className="article-header-divider" />
         </header>
 
@@ -83,6 +71,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
           id="article-nav-data"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
+              articleId: article._id,
               prev: prevArticle,
               next: nextArticle
             })
