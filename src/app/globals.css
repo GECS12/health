@@ -117,7 +117,7 @@ a {
 
 /* Sidebar Navigation Items */
 .section-group {
-  margin-bottom: 32px; /* Increased from 16px */
+  margin-bottom: 20px; /* Reduced from 32px */
 }
 
 /* Depth 0: Parts (Largest) */
@@ -127,7 +127,7 @@ a {
   text-align: left;
   background: none;
   border: none;
-  padding: 16px 32px 12px; /* Increased padding */
+  padding: 8px 32px 4px; /* Tighter padding */
   font-family: var(--font-sans);
   font-size: 16px;
   text-transform: uppercase;
@@ -144,7 +144,7 @@ a {
   width: 100%;
   background: none;
   border: none;
-  padding: 12px 32px; /* Increased vertical padding */
+  padding: 6px 32px; /* Much reduced vertical padding */
   font-family: var(--font-serif);
   font-size: 15px;
   color: var(--text-primary);
@@ -156,7 +156,7 @@ a {
 
 .section-label.depth-1:hover {
   background: var(--active-bg);
-  padding-left: 36px; /* Subtle slide effect */
+  padding-left: 36px;
 }
 
 /* Depth 2+: Sub-chapters */
@@ -169,7 +169,7 @@ a {
   width: 100%;
   background: none;
   border: none;
-  padding: 8px 32px 8px 48px;
+  padding: 4px 32px 4px 48px; /* Tighter vertical padding */
   font-family: var(--font-serif);
   font-size: 14px;
   color: var(--text-secondary);
@@ -184,19 +184,19 @@ a {
 .section-label.depth-4:hover {
   color: var(--text-primary);
   background: var(--active-bg);
-  padding-left: 52px; /* Slide effect (48px + 4px) */
+  padding-left: 52px;
 }
 
 /* Sub-links */
 .sub-links {
   display: flex;
   flex-direction: column;
-  padding: 4px 0;
+  padding: 2px 0; /* Reduced padding */
 }
 
 .sub-link {
   display: block;
-  padding: 8px 32px 8px 48px; /* Increased vertical padding from 6px */
+  padding: 4px 32px 4px 48px; /* Compact padding */
   font-family: var(--font-serif);
   font-size: 14px;
   color: var(--text-secondary);
