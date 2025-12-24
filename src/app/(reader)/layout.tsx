@@ -6,42 +6,43 @@ import { ArticleNavigation } from '../../components/ArticleNavigation'
 import { AdminEdit } from '../../components/AdminEdit'
 import { SearchModal, SearchTrigger } from '../../components/SearchModal'
 import { ArrowUpRight } from 'lucide-react'
+import { MobileMenuProvider } from '@/context/MobileMenuContext'
+import { MobileMenuWrapper } from '@/components/MobileMenuWrapper'
 import '../globals.css'
+
+import { ThemeToggle } from '../../components/ThemeToggle'
 
 export default function ReaderLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return (
+  const sidebar = <Sidebar />;
+  const toc = (
     <>
+      <div className="toc-top-actions">
+        <SearchTrigger />
+        <ThemeToggle className="theme-toggle-desktop" />
+      </div>
+      <div className="toc-header-group-minimal">
+        <AdminEdit />
+      </div>
+
+      <TableOfContents />
+      
+      <ArticleNavigation />
+    </>
+  );
+
+  return (
+    <MobileMenuProvider>
       <Header />
       <SearchModal />
-      <div className="layout-container" style={{ margin: '0', maxWidth: '100%' }}>
-        <Sidebar />
-        <main className="main-content">
-          <div className="content-inner smooth-fade">
-            {children}
-          </div>
-        </main>
-        <aside className="toc">
-          <SearchTrigger />
-          <div className="toc-header-group-minimal">
-            <AdminEdit />
-          </div>
-
-          <div className="toc-heading">
-            <ArrowUpRight size={12} strokeWidth={3} />
-            Índice do Artigo
-          </div>
-          <TableOfContents />
-          
-          <ArticleNavigation />
-          
-          <BackToTop />
-        </aside>
-      </div>
-    </>
+      <MobileMenuWrapper sidebar={sidebar} toc={toc}>
+        {children}
+      </MobileMenuWrapper>
+      <BackToTop />
+    </MobileMenuProvider>
   )
 }
 

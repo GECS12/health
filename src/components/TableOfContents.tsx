@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { useMobileMenu } from '@/context/MobileMenuContext';
+import { usePathname } from 'next/navigation';
 
 interface TOCItem {
   id: string;
@@ -12,6 +14,8 @@ interface TOCItem {
 export function TableOfContents() {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const { closeAll } = useMobileMenu();
+  const pathname = usePathname();
 
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll('.portable-text h2, .portable-text h3'))
@@ -30,7 +34,10 @@ export function TableOfContents() {
           }
         });
       },
-      { rootMargin: '0% 0% -80% 0%' }
+      { 
+        rootMargin: '-80px 0px -70% 0px', // Trigger when heading is near the top
+        threshold: 0 
+      }
     );
 
     document.querySelectorAll('.portable-text h2, .portable-text h3').forEach((elem) => {
@@ -38,7 +45,7 @@ export function TableOfContents() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   if (headings.length === 0) return null;
 
@@ -54,6 +61,7 @@ export function TableOfContents() {
             document.getElementById(heading.id)?.scrollIntoView({
               behavior: 'smooth'
             });
+            closeAll();
           }}
         >
           {heading.level === 3 && <ChevronRight size={10} className="toc-level-icon" />}

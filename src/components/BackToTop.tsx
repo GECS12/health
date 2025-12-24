@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 export function BackToTop() {
   const scrollToTop = () => {
@@ -8,9 +8,8 @@ export function BackToTop() {
   };
 
   return (
-    <button className="back-to-top" onClick={scrollToTop}>
-      <span>Voltar ao topo</span>
-      <ArrowUpRight size={14} strokeWidth={2.5} />
+    <button className="back-to-top" onClick={scrollToTop} aria-label="Voltar ao topo">
+      <ArrowUp size={20} strokeWidth={2.5} />
     </button>
   );
 }

@@ -10,11 +10,13 @@ const Citation = ({ children }: { children: any }) => {
   // 1. Are in brackets: [1]
   // 2. Are immediately following a letter (superscript-style): et al.7
   // 3. Are separated by commas: 7,8,9
-  const parts = text.split(/(\[\d+\]|(?<=[a-zA-Z.])\d+(?=[,.\s]|$))/g)
+  // Split by numbers but keep them as individual tokens
+  // Handles: [1], 7, 7,8,9
+  const tokens = text.split(/(\[\d+\]|\d+)/)
   
-  return parts.map((part, i) => {
-    const citationMatch = part.match(/\[?(\d+)\]?/)
-    if (citationMatch && part.length < 5) { // Simple safety check for short numbers
+  return tokens.map((token, i) => {
+    const citationMatch = token.match(/\[?(\d+)\]?/)
+    if (citationMatch && token.length <= 4) { // Only convert if it looks like a number
       const num = citationMatch[1]
       return (
         <a key={i} href={`#ref-${num}`} className="citation-link">
@@ -22,7 +24,7 @@ const Citation = ({ children }: { children: any }) => {
         </a>
       )
     }
-    return part
+    return token
   })
 }
 

@@ -4,6 +4,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { PageTransition } from '@/components/PageTransition'
 import { ArrowLeft, ArrowRight, Edit2 } from 'lucide-react'
+import { Breadcrumbs } from '@/components/Breadcrumbs'
+import { getFlattenedArticles } from '@/lib/navigation'
+import { ScrollReveal } from '@/components/ScrollReveal'
 
 interface ArticleProps {
   params: Promise<{ slug: string }>;
@@ -22,7 +25,7 @@ export async function generateStaticParams() {
 export default async function ArticlePage({ params }: ArticleProps) {
   const { slug } = await params
 
-  // Fetch current article and its section context
+  // Fetch current article
   const article = await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
@@ -31,9 +34,8 @@ export default async function ArticlePage({ params }: ArticleProps) {
       references,
       section->{
         title,
-        "posts": *[_type == "post" && references(^._id)] | order(order asc) {
-          title,
-          "slug": slug.current
+        parent->{
+          title
         }
       }
     }
@@ -43,26 +45,27 @@ export default async function ArticlePage({ params }: ArticleProps) {
     notFound()
   }
 
-  // Find prev/next siblings
-  const siblings = article.section?.posts || []
-  const currentIndex = siblings.findIndex((s: any) => s.slug === slug)
-  const prevArticle = currentIndex > 0 ? siblings[currentIndex - 1] : null
-  const nextArticle = currentIndex < siblings.length - 1 ? siblings[currentIndex + 1] : null
+  // Get global article order for cross-chapter navigation
+  const allArticles = await getFlattenedArticles()
+  const currentIndex = allArticles.findIndex(a => a.slug === slug)
+  const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null
+  const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null
 
   // Process references string into a list
   const referencesList = article.references 
     ? article.references.split('\n').filter((line: string) => line.trim())
     : []
 
-  // Estimate reading time (approx 200 words per minute)
-  const wordCount = JSON.stringify(article.body).split(/\s+/).length
-  const readingTime = Math.max(1, Math.ceil(wordCount / 200))
-
   return (
     <PageTransition>
       <article className="article-container">
         <header className="article-header">
            <h1 className="article-title">{article.title}</h1>
+           <Breadcrumbs 
+             part={article.section?.parent?.title} 
+             chapter={article.section?.title} 
+             article={article.title} 
+           />
            <div className="article-header-divider" />
         </header>
 
@@ -78,7 +81,9 @@ export default async function ArticlePage({ params }: ArticleProps) {
           }}
         />
         <div className="article-body-wrapper">
-          <CustomPortableText value={article.body} />
+          <ScrollReveal>
+            <CustomPortableText value={article.body} />
+          </ScrollReveal>
         </div>
 
         {referencesList.length > 0 && (
@@ -93,7 +98,13 @@ export default async function ArticlePage({ params }: ArticleProps) {
                 return (
                   <div key={i} id={`ref-${num}`} className="reference-item">
                     <span className="reference-number">{num}</span>
-                    <div className="reference-content">{content}</div>
+                    <div className="reference-content">
+                      {content.split(/(https?:\/\/[^\s]+)/g).map((part, j) => 
+                        part.match(/^https?:\/\//) 
+                          ? <a key={j} href={part} target="_blank" rel="noopener noreferrer" className="reference-link">{part}</a>
+                          : part
+                      )}
+                    </div>
                   </div>
                 )
               })}

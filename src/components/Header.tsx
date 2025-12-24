@@ -1,39 +1,46 @@
 'use client';
 
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
-import { Sun, Moon, Search, Command } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Search, Command, Menu, List } from 'lucide-react'
+import { useMobileMenu } from '@/context/MobileMenuContext'
+import { ThemeToggle } from './ThemeToggle'
 
 export function Header() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  // Avoid hydration mismatch
-  useEffect(() => setMounted(true), [])
+  const { toggleSidebar, toggleTOC } = useMobileMenu()
 
   return (
     <header className="top-header">
-      <Link href="/" className="logo">
-        Saúde e Nutrição
-      </Link>
+      <div className="header-left">
+        <button 
+          className="mobile-menu-toggle"
+          onClick={toggleSidebar}
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+        <Link href="/" className="logo">
+          Saúde e Nutrição
+        </Link>
+      </div>
       
       <div className="header-right">
-        <div className="search-bar">
+        <button className="search-bar-trigger" onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}>
           <Search size={16} />
-          <span>Pesquisar</span>
-          <div className="search-shortcut">
+          <span className="desktop-only">Pesquisar</span>
+          <div className="search-shortcut desktop-only">
              <Command size={10} /> K
           </div>
-        </div>
+        </button>
 
         <button 
-          className="theme-toggle"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          aria-label="Toggle theme"
+          className="toc-mobile-toggle"
+          onClick={toggleTOC}
+          aria-label="Toggle contents"
         >
-          {mounted && (theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />)}
+          <List size={20} />
         </button>
+
+        <ThemeToggle className="theme-toggle" />
         
         <Link href="/admin" className="editor-link">
           Editor

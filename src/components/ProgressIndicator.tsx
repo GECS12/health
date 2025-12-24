@@ -23,8 +23,8 @@ export function ProgressIndicator() {
   }, []);
 
   return (
-    <div className="progress-container">
-      <div className="progress-bar" style={{ width: `${progress}%` }} />
+    <div className="global-progress-container">
+      <div className="global-progress-bar" style={{ width: `${progress}%` }} />
     </div>
   );
 }
