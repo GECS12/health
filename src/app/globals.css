@@ -158,6 +158,33 @@ a {
   background: var(--active-bg);
 }
 
+/* Depth 2+: Sub-chapters */
+.section-label.depth-2,
+.section-label.depth-3,
+.section-label.depth-4 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 32px 8px 48px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  text-align: left;
+  font-weight: 500;
+}
+
+.section-label.depth-2:hover,
+.section-label.depth-3:hover,
+.section-label.depth-4:hover {
+  color: var(--text-primary);
+  background: var(--active-bg);
+}
+
 /* Sub-links */
 .sub-links {
   display: flex;
