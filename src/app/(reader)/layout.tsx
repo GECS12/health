@@ -5,6 +5,8 @@ import { BackToTop } from '../../components/BackToTop'
 import { ArticleNavigation } from '../../components/ArticleNavigation'
 import { AdminEdit } from '../../components/AdminEdit'
 import { SearchModal, SearchTrigger } from '../../components/SearchModal'
+import { ProgressIndicator } from '../../components/ProgressIndicator'
+import { SkipToContent } from '../../components/SkipToContent'
 import { ArrowUpRight } from 'lucide-react'
 import { MobileMenuProvider } from '@/context/MobileMenuContext'
 import { MobileMenuWrapper } from '@/components/MobileMenuWrapper'
@@ -40,6 +42,8 @@ export default function ReaderLayout({
 
   return (
     <MobileMenuProvider>
+      <SkipToContent />
+      <ProgressIndicator />
       <Header />
       <SearchModal />
       <MobileMenuWrapper sidebar={sidebar} toc={toc}>

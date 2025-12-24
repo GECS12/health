@@ -7,19 +7,27 @@ export function ProgressIndicator() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const mainContent = document.querySelector('.main-content');
-      if (!mainContent) return;
+      // Track window scroll for page-level progress
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      
+      const totalScroll = documentHeight - windowHeight;
+      const currentProgress = totalScroll > 0 ? (scrollTop / totalScroll) * 100 : 0;
 
-      const { scrollTop, scrollHeight, clientHeight } = mainContent;
-      const totalScroll = scrollHeight - clientHeight;
-      const currentProgress = (scrollTop / totalScroll) * 100;
-
-      setProgress(currentProgress);
+      setProgress(Math.min(100, Math.max(0, currentProgress)));
     };
 
-    const mainContent = document.querySelector('.main-content');
-    mainContent?.addEventListener('scroll', handleScroll);
-    return () => mainContent?.removeEventListener('scroll', handleScroll);
+    // Initial calculation
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   return (

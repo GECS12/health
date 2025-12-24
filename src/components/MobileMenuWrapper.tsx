@@ -48,7 +48,7 @@ export function MobileMenuWrapper({
         {sidebar}
       </aside>
 
-      <main className="main-content">
+      <main id="main-content" className="main-content" tabIndex={-1}>
         <div className="content-inner smooth-fade">
           {children}
         </div>

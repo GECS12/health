@@ -1,7 +1,8 @@
 import { client } from '../../lib/sanity'
 import { CustomPortableText } from '../../components/CustomPortableText'
 
-export const revalidate = 0
+// Revalidate every hour (3600 seconds)
+export const revalidate = 3600
 
 export default async function Home() {
   let article = null
