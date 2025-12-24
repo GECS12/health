@@ -1,6 +1,8 @@
 import { client } from '../../lib/sanity'
 import { CustomPortableText } from '../../components/CustomPortableText'
 
+export const revalidate = 0
+
 export default async function Home() {
   // Fetch the first article to show as home
   const article = await client.fetch(`

@@ -9,7 +9,8 @@ interface ArticleProps {
   params: Promise<{ slug: string }>
 }
 
-export const dynamicParams = false
+export const dynamicParams = true
+export const revalidate = 0
 
 export async function generateStaticParams() {
   const posts = await client.fetch(`*[_type == "post"]{ "slug": slug.current }`)
