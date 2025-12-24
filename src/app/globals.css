@@ -6,7 +6,7 @@
   /* Dignified Theme - Clean, Purity, Gravity */
   /* Replaced beige with White & Cool Grays */
   --bg-color: #ffffff;
-  --sidebar-bg: #f8f9fa; /* Very subtle cool gray/white for distinction */
+  --sidebar-bg: #f5f5f4; /* Warmer, slightly darker off-white (Stone 100) */
   --toc-bg: #ffffff;
   
   --text-primary: #111111; /* Sharp Black */
@@ -17,14 +17,14 @@
   --gold-accent: #c59d5f;  /* Muted Gold */
   
   --border-color: #e5e7eb; /* Light gray border */
-  --active-bg: #f3f4f6;
+  --active-bg: #e7e5e4; /* Slightly darker active state */
   
   --shadow-sidebar: 1px 0 0 var(--border-color); /* Clean border look instead of shadow */
   
   --font-serif: "Georgia", "Garamond", "Times New Roman", serif;
   --font-sans: "Inter", -apple-system, sans-serif;
   
-  --transition-normal: 0.2s ease;
+  --transition-normal: 0.15s cubic-bezier(0.4, 0, 0.2, 1); /* Snappy and smooth */
 }
 
 [data-theme='dark'] {
@@ -117,7 +117,7 @@ a {
 
 /* Sidebar Navigation Items */
 .section-group {
-  margin-bottom: 16px;
+  margin-bottom: 32px; /* Increased from 16px */
 }
 
 /* Depth 0: Parts (Largest) */
@@ -127,13 +127,13 @@ a {
   text-align: left;
   background: none;
   border: none;
-  padding: 12px 32px 8px; /* Added spacing */
+  padding: 16px 32px 12px; /* Increased padding */
   font-family: var(--font-sans);
-  font-size: 16px; /* Increased from 11px */
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-secondary);
-  font-weight: 800; /* Boldest */
+  font-weight: 800;
 }
 
 /* Depth 1: Chapters (Medium) */
@@ -144,9 +144,9 @@ a {
   width: 100%;
   background: none;
   border: none;
-  padding: 10px 32px;
+  padding: 12px 32px; /* Increased vertical padding */
   font-family: var(--font-serif);
-  font-size: 15px; /* Slightly smaller than Part */
+  font-size: 15px;
   color: var(--text-primary);
   cursor: pointer;
   transition: var(--transition-normal);
@@ -156,6 +156,7 @@ a {
 
 .section-label.depth-1:hover {
   background: var(--active-bg);
+  padding-left: 36px; /* Subtle slide effect */
 }
 
 /* Depth 2+: Sub-chapters */
@@ -183,6 +184,7 @@ a {
 .section-label.depth-4:hover {
   color: var(--text-primary);
   background: var(--active-bg);
+  padding-left: 52px; /* Slide effect (48px + 4px) */
 }
 
 /* Sub-links */
@@ -194,18 +196,19 @@ a {
 
 .sub-link {
   display: block;
-  padding: 6px 32px 6px 48px;
+  padding: 8px 32px 8px 48px; /* Increased vertical padding from 6px */
   font-family: var(--font-serif);
   font-size: 14px;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
 .sub-link:hover {
   color: var(--text-primary);
   background: var(--active-bg);
+  padding-left: 52px; /* Slide effect */
 }
 
 .sub-link.active {
