@@ -36,21 +36,23 @@ export function ArticleNavigation() {
 
   return (
     <div className="toc-article-nav">
-      <div className="toc-heading">
-        <ArrowRight size={12} strokeWidth={3} />
-        Navegação
-      </div>
       <div className="toc-nav-links">
         {navData.prev && (
           <Link href={`/${navData.prev.slug}`} className="toc-nav-link prev">
-            <ArrowLeft size={12} />
-            <span>{navData.prev.title}</span>
+            <span className="toc-nav-label">
+              <ArrowLeft size={10} strokeWidth={3} />
+              Anterior
+            </span>
+            <span className="toc-nav-title">{navData.prev.title}</span>
           </Link>
         )}
         {navData.next && (
           <Link href={`/${navData.next.slug}`} className="toc-nav-link next">
-            <span>{navData.next.title}</span>
-            <ArrowRight size={12} />
+            <span className="toc-nav-label">
+              Seguinte
+              <ArrowRight size={10} strokeWidth={3} />
+            </span>
+            <span className="toc-nav-title">{navData.next.title}</span>
           </Link>
         )}
       </div>

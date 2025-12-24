@@ -83,11 +83,13 @@ const components: PortableTextComponents = {
     },
     h1: ({ children }) => <h1>{children}</h1>,
     h2: ({ children, value }) => {
-      const id = value._key || Math.random().toString(36).substr(2, 9);
+      const text = Array.isArray(children) ? children.join('') : (typeof children === 'string' ? children : '');
+      const id = value._key || text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s-]+/g, '-');
       return <h2 id={id}>{children}</h2>;
     },
     h3: ({ children, value }) => {
-      const id = value._key || Math.random().toString(36).substr(2, 9);
+      const text = Array.isArray(children) ? children.join('') : (typeof children === 'string' ? children : '');
+      const id = value._key || text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s-]+/g, '-');
       return <h3 id={id}>{children}</h3>;
     },
     blockquote: ({ children }) => (

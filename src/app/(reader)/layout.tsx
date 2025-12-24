@@ -25,6 +25,10 @@ export default function ReaderLayout({
         <ThemeToggle className="theme-toggle-desktop" />
       </div>
       <div className="toc-header-group-minimal">
+        <div className="toc-sidebar-heading">
+           <ArrowUpRight size={12} strokeWidth={3} />
+           Conteúdo do Artigo
+        </div>
         <AdminEdit />
       </div>
 

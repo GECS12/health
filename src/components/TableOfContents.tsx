@@ -28,6 +28,7 @@ export function TableOfContents() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        // Track which headings are in view and their positions
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id);
@@ -35,17 +36,28 @@ export function TableOfContents() {
         });
       },
       { 
-        rootMargin: '-80px 0px -70% 0px', // Trigger when heading is near the top
+        // rootMargin focuses on a narrow band near the top of the viewport
+        rootMargin: '-10% 0% -70% 0%', 
         threshold: 0 
       }
     );
 
-    document.querySelectorAll('.portable-text h2, .portable-text h3').forEach((elem) => {
-      observer.observe(elem);
-    });
+    const headingElements = document.querySelectorAll('.portable-text h2, .portable-text h3');
+    headingElements.forEach((elem) => observer.observe(elem));
 
-    return () => observer.disconnect();
-  }, [pathname]);
+    // Fallback: Check scroll position if no heading is intersecting (e.g. at the very top)
+    const handleScroll = () => {
+      if (window.scrollY < 100 && headings.length > 0) {
+        setActiveId(headings[0].id);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [pathname]); // Only re-run when the route changes
 
   if (headings.length === 0) return null;
 

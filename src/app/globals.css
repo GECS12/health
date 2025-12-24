@@ -242,10 +242,8 @@ a {
 
 .sub-link.active {
   color: #000000; /* Pure black when active */
-  font-weight: 300; /* Match non-active weight */
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 4px;
+  font-weight: 600; /* Slightly bolder but no underline */
+  background: var(--active-bg);
 }
 
 /* .sub-link.active::before { content: '•'; } */
@@ -326,8 +324,18 @@ a {
   margin-bottom: 24px;
 }
 
-.toc-heading {
-  display: none; /* Hidden as per request to reduce clutter */
+.toc-sidebar-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-color);
+  opacity: 0.8;
+  margin-bottom: 12px;
 }
 
 /* Styles for TOC links (assumed component) */
@@ -335,13 +343,14 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 32px;
+  padding: 8px 32px;
   font-family: var(--font-serif);
-  font-size: 14px;
+  font-size: 14.5px;
   color: var(--text-secondary);
   transition: all 0.2s ease;
   position: relative;
-  line-height: 1.4;
+  line-height: 1.3;
+  border-radius: 4px;
 }
 
 .toc-link:hover {
@@ -450,9 +459,9 @@ a {
   text-align: justify;
 }
 
-/* Article Navigation */
+/* Article Navigation in TOC */
 .toc-article-nav {
-  margin-top: 24px;
+  margin-top: 32px;
   padding-top: 24px;
   border-top: 1px solid var(--border-color);
 }
@@ -460,26 +469,56 @@ a {
 .toc-nav-links {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
 
 .toc-nav-link {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  padding: 8px;
-  border-radius: 4px;
-  transition: background 0.2s;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid transparent;
 }
 
 .toc-nav-link:hover {
   background: var(--active-bg);
-  color: var(--text-primary);
+  border-color: rgba(184, 134, 11, 0.1);
+  transform: translateY(-1px);
 }
 
-.toc-nav-link.next { justify-content: flex-end; text-align: right; }
+.toc-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-color);
+  opacity: 0.8;
+}
+
+.toc-nav-title {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.toc-nav-link.next {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.toc-nav-link.next .toc-nav-label {
+  justify-content: flex-end;
+}
 
 .top-header { display: none; }
 
