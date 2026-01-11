@@ -29,7 +29,7 @@ export async function getNavigationTree(): Promise<Section[]> {
       }
       }
     }
-  `, {}, { next: { tags: ['content'] } });
+  `);
 
   if (!allSections) return [];
 

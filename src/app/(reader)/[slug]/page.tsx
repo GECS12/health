@@ -41,7 +41,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
         }
       }
     }
-  `, { slug }, { next: { tags: ['content'] } })
+  `, { slug })
 
   if (!article) {
     notFound()
