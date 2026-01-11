@@ -10,8 +10,20 @@ interface Post {
   slug: string;
 }
 
-const capitalize = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+const formatTitle = (str: string) => {
+  // Handle Roman numerals or specific acronyms if needed
+  if (/^[XIV]+$/.test(str)) return str;
+  
+  // Normalize casing: lowercase first, then capitalize words
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => {
+      // Keep roman numerals uppercase if they appear (simple check)
+      if (/^(ii|iii|iv|vi|vii|viii|ix|xi)$/i.test(word)) return word.toUpperCase();
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
 };
 
 interface Section {
@@ -36,15 +48,19 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
   const hasContent = section.posts.length > 0 || section.subSections.length > 0;
 
   return (
-    <div className="section-group" style={{ marginLeft: depth > 0 ? `${depth * 0.75}rem` : '0' }}>
+    <div className="section-group">
       <button 
         className={`section-label depth-${depth} ${hasContent ? 'has-children' : ''} ${isOpen ? 'is-open' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
       >
-        <div className="section-title-wrapper">
-          <span>{capitalize(section.title)}</span>
-        </div>
+        <span className="section-title-text">{formatTitle(section.title)}</span>
+        {hasContent && (
+          <ChevronDown 
+            size={14} 
+            className={`section-chevron ${isOpen ? 'chevron-open' : ''}`}
+          />
+        )}
       </button>
       
       <AnimatePresence initial={false}>
@@ -62,7 +78,7 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
                 <SidebarLink 
                   key={post.slug} 
                   href={`/${post.slug}`} 
-                  title={capitalize(post.title)}
+                  title={formatTitle(post.title)}
                 />
               ))}
               
