@@ -1,0 +1,30 @@
+/* Custom Sanity Studio Styles */
+
+/* Make the Portable Text Editor expand wider in fullscreen mode */
+[data-fullscreen="true"] {
+  max-width: 100% !important;
+}
+
+/* Make the editable text area wider */
+.pt-editable {
+  max-width: 100% !important;
+}
+
+/* Expand the text block wrapper */
+[data-testid="text-block"] {
+  max-width: 100% !important;
+}
+
+[data-testid="text-block__wrapper"] {
+  max-width: 100% !important;
+}
+
+/* Ensure the portable text editor container uses full width */
+[data-ui="Box"][data-testid="pt-editor__body-block"] {
+  max-width: 100% !important;
+}
+
+/* Expand the editor content area */
+.sc-iXANDt {
+  max-width: 100% !important;
+}

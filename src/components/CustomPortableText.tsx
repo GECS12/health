@@ -6,24 +6,31 @@ const Citation = ({ children }: { children: any }) => {
   const text = Array.isArray(children) ? children[0] : children
   if (typeof text !== 'string') return children
 
-  // Match numbers that:
-  // 1. Are in brackets: [1]
-  // 2. Are immediately following a letter (superscript-style): et al.7
-  // 3. Are separated by commas: 7,8,9
-  // Split by numbers but keep them as individual tokens
-  // Handles: [1], 7, 7,8,9
-  const tokens = text.split(/(\[\d+\]|\d+)/)
+  // Only match EXPLICIT bracketed citation patterns:
+  // e.g. "texto [1]" or "texto [1,2,3]"
+  const tokens = text.split(/(\[\d+(?:,\s*\d+)*\])/g)
   
   return tokens.map((token, i) => {
-    const citationMatch = token.match(/\[?(\d+)\]?/)
-    if (citationMatch && token.length <= 4) { // Only convert if it looks like a number
-      const num = citationMatch[1]
+    // Check if it's a bracketed citation [1] or [1,2]
+    const bracketMatch = token.match(/^\[([\d+,\s*]+)\]$/)
+    if (bracketMatch) {
+      const content = bracketMatch[1]
+      const nums = content.split(',').map(n => n.trim())
+      
       return (
-        <a key={i} href={`#ref-${num}`} className="citation-link">
-          {num}
-        </a>
+        <span key={i} className="citation-wrapper">
+          {nums.map((num, j) => (
+            <span key={j}>
+              {j > 0 && ','}
+              <a href={`#ref-${num}`} className="citation-link">
+                {num}
+              </a>
+            </span>
+          ))}
+        </span>
       )
     }
+    
     return token
   })
 }
