@@ -1,12 +1,7 @@
 import type { Metadata } from 'next';
-import { Outfit, EB_Garamond } from 'next/font/google';
+import { EB_Garamond } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import './globals.css';
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
 
 const ebGaramond = EB_Garamond({
   subsets: ['latin'],
@@ -25,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt" suppressHydrationWarning>
-      <body className={`${outfit.variable} ${ebGaramond.variable}`}>
+      <body className={`${ebGaramond.variable}`}>
         <ThemeProvider>
           {children}
         </ThemeProvider>
@@ -33,3 +28,4 @@ export default function RootLayout({
     </html>
   );
 }
+
