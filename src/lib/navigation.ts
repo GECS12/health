@@ -28,7 +28,9 @@ export async function getNavigationTree(): Promise<Section[]> {
         order
       }
     }
-  `);
+      }
+    }
+  `, {}, { next: { tags: ['content'] } });
 
   if (!allSections) return [];
 

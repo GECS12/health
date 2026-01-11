@@ -14,7 +14,7 @@ export default async function Home() {
         title,
         body
       }
-    `)
+    `, {}, { next: { tags: ['content'] } })
   } catch (error) {
     console.error('Sanity fetch error:', error)
     return (

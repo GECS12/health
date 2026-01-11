@@ -10,7 +10,7 @@
   max-width: 100% !important;
 }
 
-/* Expand the text block wrapper */
+/* Target the text-block wrapper specifically */
 [data-testid="text-block"] {
   max-width: 100% !important;
 }
@@ -19,12 +19,41 @@
   max-width: 100% !important;
 }
 
-/* Ensure the portable text editor container uses full width */
-[data-ui="Box"][data-testid="pt-editor__body-block"] {
+/* Target the inner Box containers that constrain width */
+[data-testid="text-block__wrapper"] > [data-ui="Flex"] {
   max-width: 100% !important;
 }
 
-/* Expand the editor content area */
+[data-testid="text-block__wrapper"] > [data-ui="Flex"] > [data-ui="Box"] {
+  max-width: 100% !important;
+  flex: 1 !important;
+}
+
+[data-testid="text-block__text"] {
+  max-width: 100% !important;
+}
+
+/* Target the scroll container */
+[data-testid="scroll-container"] {
+  max-width: 100% !important;
+}
+
+/* StyledBox wrapper */
 .sc-iXANDt {
   max-width: 100% !important;
 }
+
+/* Override any max-width on the editor content containers */
+[data-ui="Box"][class*="StyledBox"] {
+  max-width: 100% !important;
+}
+
+/* Ensure portable text blocks use full width */
+.pt-block {
+  max-width: 100% !important;
+}
+
+.pt-text-block {
+  max-width: 100% !important;
+}
+
