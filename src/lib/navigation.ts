@@ -27,7 +27,6 @@ export async function getNavigationTree(): Promise<Section[]> {
         "slug": slug.current,
         order
       }
-      }
     }
   `);
 
