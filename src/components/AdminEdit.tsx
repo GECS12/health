@@ -3,9 +3,9 @@
 import { Edit2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
-export function AdminEdit() {
+function AdminEditInner() {
   const searchParams = useSearchParams();
   const isAdmin = searchParams.get('admin') === 'true';
   const pathname = usePathname();
@@ -36,5 +36,13 @@ export function AdminEdit() {
         <span>Editar Artigo</span>
       </Link>
     </div>
+  );
+}
+
+export function AdminEdit() {
+  return (
+    <Suspense fallback={null}>
+      <AdminEditInner />
+    </Suspense>
   );
 }
