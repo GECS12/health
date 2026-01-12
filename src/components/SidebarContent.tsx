@@ -36,6 +36,11 @@ interface Section {
 export function SidebarContent({ tree }: { tree: Section[] }) {
   return (
     <nav className="sidebar-nav">
+      <div className="section-group">
+        <a href="/" className="home-link">
+          <span className="section-title-text">Introdução</span>
+        </a>
+      </div>
       {tree.map(section => (
         <SectionView key={section._id} section={section} depth={0} />
       ))}

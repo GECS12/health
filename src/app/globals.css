@@ -8,9 +8,9 @@
   --sidebar-bg: #FAFAFA;
   --toc-bg: #FFFFFF;
   
-  --text-primary: #222;
-  --text-secondary: #666;
-  --text-muted: #999;
+  --text-primary: #111;
+  --text-secondary: #444;
+  --text-muted: #777;
   
   --accent-color: #8B7355;
   --accent-light: #A99077;
@@ -18,7 +18,7 @@
   --active-bg: rgba(180, 140, 90, 0.12);
   --hover-bg: rgba(0, 0, 0, 0.02);
   
-  --font-serif: var(--font-serif, "Cormorant Garamond", Georgia, serif);
+  --font-serif: var(--font-serif, "EB Garamond", Georgia, serif);
   --font-sans: var(--font-serif);
   
   /* Subtle Motion */
@@ -189,6 +189,27 @@ a {
 }
 
 /* Sidebar Navigation Items */
+/* Special Home Link (Introdução) */
+.home-link {
+  display: block;
+  background-color: transparent;
+  color: #000; /* Match Parts color */
+  padding: 14px 20px 6px 20px; /* Match Parts padding exactly */
+  font-family: var(--font-serif);
+  font-size: 22px; /* Bigger on left bar */
+  font-weight: 800; /* Match Parts weight */
+  text-shadow: 0.1px 0 0 currentColor; /* Smudge blacker */
+  text-decoration: none;
+  margin-bottom: 2px; /* Closer to Saude */
+  width: 100%;
+  border-radius: 0;
+}
+
+.home-link:hover {
+  color: var(--accent-color);
+  background-color: transparent;
+}
+
 .sidebar-nav {
   padding-top: 24px;
   padding-bottom: 40px;
@@ -240,10 +261,11 @@ a {
   border: none;
   padding: 14px 20px 6px 20px;
   font-family: var(--font-serif);
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 800;
+  text-shadow: 0.1px 0 0 currentColor; /* Smudge blacker */
   letter-spacing: -0.01em;
-  color: var(--text-primary);
+  color: #000;
   cursor: pointer;
   margin-top: 12px;
 }
@@ -263,11 +285,11 @@ a {
   padding: 6px 16px 6px 12px;
   font-family: var(--font-serif);
   font-size: 16px;
-  color: var(--text-primary);
+  color: #151515; /* More black, but not quite #000 */
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .section-label.depth-1:hover {
@@ -335,11 +357,11 @@ a {
   display: block;
   padding: 5px 16px;
   font-family: var(--font-serif);
-  font-size: 15px;
-  color: var(--text-secondary);
+  font-size: 14px;
+  color: #222; /* More black */
   text-decoration: none;
   transition: all var(--transition-fast);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.35;
   position: relative;
   border-left: 2px solid transparent;
@@ -360,7 +382,7 @@ a {
   color: var(--accent-color);
   font-weight: 600;
   border-left-color: var(--accent-color);
-  background: linear-gradient(90deg, var(--active-bg) 0%, transparent 100%);
+  background: var(--active-bg);
 }
 
 .section-icon { display: none; }
