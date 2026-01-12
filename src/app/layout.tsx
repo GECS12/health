@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { EB_Garamond } from 'next/font/google';
+import { Cormorant_Garamond } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import './globals.css';
 
-const ebGaramond = EB_Garamond({
+const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-serif',
 });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt" suppressHydrationWarning>
-      <body className={`${ebGaramond.variable}`}>
+      <body className={`${cormorantGaramond.variable}`}>
         <ThemeProvider>
           {children}
         </ThemeProvider>
