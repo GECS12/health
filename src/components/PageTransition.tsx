@@ -6,14 +6,13 @@ import React from 'react';
 export function PageTransition({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ rotateY: -20, opacity: 0, originX: 0 }}
-      animate={{ rotateY: 0, opacity: 1, originX: 0 }}
-      exit={{ rotateY: 20, opacity: 0, originX: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
       transition={{ 
-        duration: 0.6, 
-        ease: [0.4, 0, 0.2, 1]
+        duration: 0.25, 
+        ease: 'easeOut'
       }}
-      style={{ perspective: 1200 }}
     >
       {children}
     </motion.div>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMobileMenu } from '@/context/MobileMenuContext';
 
 export function MobileMenuWrapper({ 
@@ -45,7 +46,9 @@ export function MobileMenuWrapper({
 
       {/* Desktop Sidebar */}
       <aside className="sidebar desktop-only">
-        {sidebar}
+        <ScrollArea className="h-[calc(100vh-1px)]">
+          {sidebar}
+        </ScrollArea>
       </aside>
 
       <main id="main-content" className="main-content" tabIndex={-1}>
