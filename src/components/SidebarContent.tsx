@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
 
 interface Post {
@@ -10,9 +10,36 @@ interface Post {
   slug: string;
 }
 
+const toRoman = (num: number): string => {
+  const romicals = [
+    ['M', 1000], ['CM', 900], ['D', 500], ['CD', 400],
+    ['C', 100], ['XC', 90], ['L', 50], ['XL', 40],
+    ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]
+  ] as const;
+  let res = '';
+  for (const [rom, val] of romicals) {
+    while (num >= val) {
+      res += rom;
+      num -= val;
+    }
+  }
+  return res;
+};
+
 const formatTitle = (str: string) => {
   // Handle Roman numerals or specific acronyms if needed
   if (/^[XIV]+$/.test(str)) return str;
+
+  // Specific replacements for "PartX" and "CapX"
+  const partMatch = str.match(/^Part\s*(\d+)$/i);
+  if (partMatch) {
+    return `Parte ${toRoman(parseInt(partMatch[1], 10))}`;
+  }
+
+  const capMatch = str.match(/^Cap\s*(\d+)$/i);
+  if (capMatch) {
+    return `Capítulo ${capMatch[1]}`;
+  }
   
   // Normalize casing: lowercase first, then capitalize words
   return str
@@ -61,8 +88,8 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
       >
         <span className="section-title-text">{formatTitle(section.title)}</span>
         {hasContent && (
-          <ChevronDown 
-            size={14} 
+          <ChevronRight 
+            size={18} 
             className={`section-chevron ${isOpen ? 'chevron-open' : ''}`}
           />
         )}

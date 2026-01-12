@@ -227,8 +227,9 @@ a {
   opacity: 0.7;
 }
 
+/* Rotate: Right (closed) -> Down (open) */
 .section-chevron.chevron-open {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 
 .section-label:hover .section-chevron {
@@ -259,15 +260,15 @@ a {
   text-align: left;
   background: none;
   border: none;
-  padding: 14px 20px 6px 20px;
+  padding: 18px 20px 8px 20px; /* Increased vertical spacing */
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 20px; /* Increased size */
   font-weight: 800;
   text-shadow: 0.1px 0 0 currentColor; /* Smudge blacker */
   letter-spacing: -0.01em;
   color: #000;
   cursor: pointer;
-  margin-top: 12px;
+  margin-top: 24px; /* Significant separation */
 }
 
 .section-group:first-child .section-label.depth-0 {
@@ -282,22 +283,21 @@ a {
   width: 100%;
   background: none;
   border: none;
-  padding: 6px 16px 6px 12px;
+  padding: 8px 16px 8px 16px; /* Balanced padding */
   font-family: var(--font-serif);
   font-size: 16px;
-  color: #151515; /* More black, but not quite #000 */
+  color: #151515;
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
   font-weight: 600;
+  margin-top: 4px;
 }
 
 .section-label.depth-1:hover {
   color: var(--accent-color);
+  background: var(--hover-bg);
 }
-
-/* Vertical Guide Lines Setup */
-/* The vertical lines are now handled recursively by .sub-links border-left */
 
 /* Ensure nested groups don't double-indent */
 .section-group .section-group {
@@ -313,13 +313,9 @@ a {
   display: none;
 }
 
-.section-label.depth-1:hover {
-  color: var(--active-color);
-}
-
 /* Depth 1: Update padding to align with rail */
 .section-label.depth-1 {
-  padding-left: 16px;
+  padding-left: 32px; /* Indent Chapters under Parts */
 }
 
 /* Depth 2+: Sub-chapters */
@@ -332,57 +328,54 @@ a {
   width: 100%;
   background: none;
   border: none;
-  padding: 3px 20px 3px 16px;
+  padding: 6px 20px 6px 48px; /* Further indent */
   font-family: var(--font-serif);
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: #444;
   cursor: pointer;
   transition: color var(--transition-fast);
   text-align: left;
-  font-weight: 400;
+  font-weight: 500;
 }
-
-/* Nested section groups - indentation REMOVED (handled by margin nesting) */
 
 /* Sub-links (Articles) */
 .sub-links {
   display: flex;
   flex-direction: column;
   padding: 0;
-  margin-left: 28px;
-  border-left: 1px solid #EAEAEA;
+  margin-left: 0;
+  border-left: none; /* Removing vertical line, focusing on whitespace */
 }
 
 .sub-link {
   display: block;
-  padding: 5px 16px;
+  padding: 8px 16px 8px 48px; /* Indent relative to parent */
   font-family: var(--font-serif);
   font-size: 14px;
-  color: #222; /* More black */
+  color: #444; /* Dark gray */
   text-decoration: none;
   transition: all var(--transition-fast);
-  font-weight: 500;
-  line-height: 1.35;
+  font-weight: 400;
+  line-height: 1.4;
   position: relative;
-  border-left: 2px solid transparent;
-  margin-left: -1px;
+  border-left: 3px solid transparent; /* Prepare for active border */
 }
 
-/* Remove old manual indentation */
-.section-group .section-group .sub-link {
-  padding-left: 16px;
+/* Indent deeper levels */
+.section-group .section-group .sub-links .sub-link {
+  padding-left: 54px; 
 }
 
 .sub-link:hover {
   color: var(--text-primary);
-  border-left-color: var(--border-color);
+  background: var(--hover-bg);
 }
 
 .sub-link.active {
-  color: var(--accent-color);
+  color: #3e2b18; /* Darker accent */
   font-weight: 600;
-  border-left-color: var(--accent-color);
-  background: var(--active-bg);
+  background: rgba(180, 140, 90, 0.15); /* Distinct active background */
+  border-left-color: #8B7355; /* Solid Accent Border */
 }
 
 .section-icon { display: none; }
