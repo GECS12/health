@@ -10,6 +10,7 @@ interface TOCItem {
   id: string;
   text: string;
   level: number;
+  type: 'header' | 'quote';
 }
 
 export function TableOfContents() {
@@ -19,9 +20,12 @@ export function TableOfContents() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const elements = Array.from(document.querySelectorAll('.portable-text h2, .portable-text h3'))
+    // Select headers AND blockquotes
+    const elements = Array.from(document.querySelectorAll('.portable-text h2, .portable-text h3, .portable-text blockquote'))
       .map((elem, index) => {
         let id = elem.id;
+        const isQuote = elem.tagName.toLowerCase() === 'blockquote';
+
         if (!id) {
           const text = elem.textContent || '';
           id = text
@@ -29,15 +33,16 @@ export function TableOfContents() {
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '');
           
-          if (!id) id = `heading-${index}`; // Fallback if text is empty/special chars
+          if (!id) id = `item-${index}`;
           elem.id = id;
         }
 
         return {
           id,
           text: elem.textContent || '',
-          level: Number(elem.tagName.substring(1)),
-        };
+          level: isQuote ? 4 : Number(elem.tagName.substring(1)),
+          type: isQuote ? 'quote' : 'header'
+        } as TOCItem;
       });
     setHeadings(elements);
 
@@ -55,7 +60,7 @@ export function TableOfContents() {
       }
     );
 
-    const headingElements = document.querySelectorAll('.portable-text h2, .portable-text h3');
+    const headingElements = document.querySelectorAll('.portable-text h2, .portable-text h3, .portable-text blockquote');
     headingElements.forEach((elem) => observer.observe(elem));
 
     const handleScroll = () => {
@@ -81,17 +86,19 @@ export function TableOfContents() {
       <div className="flex flex-col gap-3">
         {headings.map((heading) => {
           const isActive = activeId === heading.id;
+          const isQuote = heading.type === 'quote';
+          
           return (
             <a
               key={heading.id}
               href={`#${heading.id}`}
-              className={`group relative flex items-start gap-3 text-sm transition-colors ${
+              className={`group relative flex items-start gap-3 transition-colors ${
                 isActive 
                   ? 'text-[var(--accent-color)] font-semibold' 
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
               style={{
-                paddingLeft: heading.level === 3 ? '16px' : '0'
+                paddingLeft: heading.level === 3 ? '16px' : heading.level === 4 ? '12px' : '0'
               }}
               onClick={(e) => {
                 e.preventDefault();
@@ -102,7 +109,7 @@ export function TableOfContents() {
                 closeAll();
               }}
             >
-              <div className="relative z-10 mt-[6px] flex h-2 w-2 items-center justify-center">
+              <div className="relative z-10 mt-[6px] flex h-2 w-2 items-center justify-center shrink-0">
                 {/* Static base dot for inactive state */}
                 <span className={`absolute h-1 w-1 rounded-full transition-colors duration-200 ${
                    isActive ? 'bg-transparent' : 'bg-neutral-300 dark:bg-neutral-600 group-hover:bg-neutral-400'
@@ -118,7 +125,7 @@ export function TableOfContents() {
                 )}
               </div>
 
-              <span className="leading-tight">
+              <span className={`leading-tight ${isQuote ? 'font-serif italic text-xs opacity-85 mt-[-1px]' : 'text-sm'}`}>
                 {heading.text}
               </span>
             </a>

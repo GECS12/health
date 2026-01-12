@@ -9,10 +9,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide Next.js Dev Tools Indicator */
+[data-next-badge-root] {
+  display: none !important;
+}
+
 :root {
   --header-height: 0px;
-  --sidebar-width: 300px;
-  --toc-width: 280px;
+  --sidebar-width: 350px;
+  --toc-width: 320px;
 
   /* Clean & Minimal Palette */
   --bg-color: #FFFFFF;
