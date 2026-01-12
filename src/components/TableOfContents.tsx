@@ -20,30 +20,108 @@ export function TableOfContents() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Select headers AND blockquotes
-    const elements = Array.from(document.querySelectorAll('.portable-text h2, .portable-text h3, .portable-text blockquote'))
-      .map((elem, index) => {
-        let id = elem.id;
-        const isQuote = elem.tagName.toLowerCase() === 'blockquote';
+    // Select container to scope our search
+    const portableText = document.querySelector('.portable-text');
+    if (!portableText) return;
 
+    // Get all potential candidates
+    const candidates = Array.from(portableText.querySelectorAll('h2, h3, blockquote, p'));
+    
+    const validNodes: Element[] = [];
+    const elements: TOCItem[] = [];
+
+    candidates.forEach((elem, index) => {
+      const tag = elem.tagName.toLowerCase();
+      let text = '';
+      let type: 'header' | 'quote' = 'header';
+      let level = 2;
+
+      // Handle Headers
+      if (tag === 'h2') {
+        text = elem.textContent || '';
+        level = 2;
+      } else if (tag === 'h3') {
+        text = elem.textContent || '';
+        level = 3;
+      } 
+      // Handle Blockquotes
+      else if (tag === 'blockquote') {
+        text = elem.textContent || '';
+        type = 'quote';
+        level = 4;
+      } 
+      // Handle Paragraphs with Bold Start (Pseudo-headers)
+      else if (tag === 'p') {
+        const firstChild = elem.firstElementChild;
+        // Check if first child is STRONG or B
+        if (firstChild && (firstChild.tagName === 'STRONG' || firstChild.tagName === 'B')) {
+           const boldText = (firstChild.textContent || '').trim();
+           
+           // Ensure the paragraph actually STARTS with this bold text 
+           // (prevents picking up bold text from middle of sentences)
+           const pText = (elem.textContent || '').trim();
+           
+           // HEURISTIC: An "index" entry (header) is usually short. 
+           // If the bold text is very long (e.g. > 80 chars), it is likely just an emphasized paragraph, not a header.
+           const isLikelyHeader = boldText.length > 2 && boldText.length < 80;
+
+           if (isLikelyHeader && pText.startsWith(boldText)) {
+             text = boldText;
+             level = 4; // Treat as smallest header
+           }
+        }
+      }
+
+      // If we found valid text, process it
+      if (text.trim()) {
+        // Smart Truncation & Formatting
+        let displayText = text.trim();
+        
+        // 1. Clean up excessive whitespace
+        displayText = displayText.replace(/\s+/g, ' ');
+
+        // 2. Truncate if too long (e.g., > 60 chars) - Redundant if we have the <80 check, but safe for H2/H3
+        if (displayText.length > 60) {
+          // Find the last space within the limit to avoid cutting words
+          const cutPoint = displayText.lastIndexOf(' ', 60);
+          if (cutPoint > 0) {
+            displayText = displayText.substring(0, cutPoint) + '...';
+          } else {
+            displayText = displayText.substring(0, 60) + '...';
+          }
+        }
+        
+        // 3. Normalize casing: lowercased (unless proper noun likelihood low) with Capitalized first letter
+        // If it was ALL CAPS, fix it.
+        if (displayText.length > 4 && displayText === displayText.toUpperCase()) {
+            displayText = displayText.toLowerCase();
+        }
+        // Always capitalize first letter
+        displayText = displayText.charAt(0).toUpperCase() + displayText.slice(1);
+
+        let id = elem.id;
         if (!id) {
-          const text = elem.textContent || '';
           id = text
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
+            .replace(/(^-|-$)/g, '')
+            .substring(0, 50);
           
           if (!id) id = `item-${index}`;
           elem.id = id;
         }
 
-        return {
+        elements.push({
           id,
-          text: elem.textContent || '',
-          level: isQuote ? 4 : Number(elem.tagName.substring(1)),
-          type: isQuote ? 'quote' : 'header'
-        } as TOCItem;
-      });
+          text: displayText,
+          level,
+          type
+        });
+        
+        validNodes.push(elem);
+      }
+    });
+
     setHeadings(elements);
 
     const observer = new IntersectionObserver(
@@ -60,8 +138,7 @@ export function TableOfContents() {
       }
     );
 
-    const headingElements = document.querySelectorAll('.portable-text h2, .portable-text h3, .portable-text blockquote');
-    headingElements.forEach((elem) => observer.observe(elem));
+    validNodes.forEach((elem) => observer.observe(elem));
 
     const handleScroll = () => {
       if (window.scrollY < 100 && headings.length > 0) {
