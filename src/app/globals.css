@@ -22,7 +22,7 @@
   /* Clean & Minimal Palette */
   --bg-color: #FFFFFF;
   --sidebar-bg: #FAFAFA;
-  --toc-bg: #FFFFFF;
+  --toc-bg: var(--sidebar-bg);
 
   --text-primary: #111;
   --text-secondary: #444;
@@ -85,7 +85,7 @@
 [data-theme='dark'] {
   --bg-color: #141312; /* Warm Charcoal */
   --sidebar-bg: #0F0E0D; /* Deep Espresso */
-  --toc-bg: #141312;
+  --toc-bg: var(--sidebar-bg);
   --text-primary: #F5F3F0; /* Soft Cream White */
   --text-secondary: #9A948A; /* Warm Stone */
   --text-muted: #6E6860;
