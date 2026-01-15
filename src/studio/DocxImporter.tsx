@@ -50,7 +50,46 @@ export function DocxImporter(props: any) {
 
       setStatus('Converting Docx to HTML...')
       const result = await mammoth.convertToHtml({arrayBuffer}, uploadOptions)
-      const html = result.value
+      let html = result.value
+
+      // Post-process HTML to format citations
+      // We need to be careful NOT to match natural numbers like "9 em relação a 3,75"
+      setStatus('Formatting citations...')
+      
+      // Pattern 1: Citations at START of paragraph
+      // Match: <p>NUMBER(s) followed by space and UPPERCASE letter
+      // This catches "19,20,21 A ocidentalização..." or "24 A denominação..."
+      html = html.replace(
+        /(<p[^>]*>)\s*(\d+(?:\s*,\s*\d+)*)\s+([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ])/g,
+        (match, pTag, nums, firstLetter) => {
+          const formattedNums = nums.split(',').map((n: string) => n.trim()).join(',')
+          return `${pTag}<sup class="citation-ref">[${formattedNums}]</sup> ${firstLetter}`
+        }
+      )
+      
+      // Pattern 2: Citations AFTER a period with NO space: ".1" or ".2,3" or ".22,23"
+      // This is the key distinguisher - citations are "glued" to the period
+      // Avoid matching things like ". 9" (space) or ".75" (decimal)
+      html = html.replace(
+        /\.(\d+(?:,\d+)*)(?=\s|<|$)/g,
+        (match, nums) => {
+          // Skip if it looks like a decimal (single digit after period with more text)
+          // e.g., "3.75" should not be matched - but we're matching ".75" pattern
+          // Actually, "3.75" would match as "3" then ".75" - we need to check context
+          // Only convert if nums contains citation-like patterns (1-3 digit numbers)
+          const numList = nums.split(',')
+          // Check if all numbers are reasonable citation numbers (1-999)
+          const isCitation = numList.every((n: string) => {
+            const num = parseInt(n.trim(), 10)
+            return num >= 1 && num <= 999
+          })
+          if (isCitation) {
+            const formattedNums = numList.map((n: string) => n.trim()).join(',')
+            return `.<sup class="citation-ref">[${formattedNums}]</sup>`
+          }
+          return match
+        }
+      )
 
       setStatus('Converting HTML to Portable Text...')
       
@@ -73,6 +112,14 @@ export function DocxImporter(props: any) {
                       _ref: assetId
                     }
                   })
+                }
+              }
+              // Handle superscript elements (for citations)
+              if (el instanceof HTMLElement && el.tagName.toLowerCase() === 'sup') {
+                return {
+                  _type: 'span',
+                  marks: ['sup'],
+                  text: el.textContent || ''
                 }
               }
               return undefined

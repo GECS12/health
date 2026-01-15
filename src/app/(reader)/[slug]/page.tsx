@@ -33,7 +33,6 @@ export default async function ArticlePage({ params }: ArticleProps) {
       _id,
       title,
       body,
-      references,
       section->{
         title,
         parent->{
@@ -52,11 +51,6 @@ export default async function ArticlePage({ params }: ArticleProps) {
   const currentIndex = allArticles.findIndex(a => a.slug === slug)
   const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null
   const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null
-
-  // Process references string into a list
-  const referencesList = article.references 
-    ? article.references.split('\n').filter((line: string) => line.trim())
-    : []
 
   return (
     <PageTransition>
@@ -87,32 +81,6 @@ export default async function ArticlePage({ params }: ArticleProps) {
             <CustomPortableText value={article.body} />
           </ScrollReveal>
         </div>
-
-        {referencesList.length > 0 && (
-          <section className="references-section">
-            <h2 className="references-heading">Referências Bibliográficas</h2>
-            <div className="references-list">
-              {referencesList.map((ref: string, i: number) => {
-                const match = ref.match(/^(\d+)[\s.–]+(.*)/)
-                const num = match ? match[1] : (i + 1)
-                const content = match ? match[2] : ref
-
-                return (
-                  <div key={i} id={`ref-${num}`} className="reference-item">
-                    <span className="reference-number">{num}</span>
-                    <div className="reference-content">
-                      {content.split(/(https?:\/\/[^\s]+)/g).map((part, j) => 
-                        part.match(/^https?:\/\//) 
-                          ? <a key={j} href={part} target="_blank" rel="noopener noreferrer" className="reference-link">{part}</a>
-                          : part
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </section>
-        )}
 
         <Comments postId={article._id} />
         

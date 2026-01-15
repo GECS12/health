@@ -48,6 +48,12 @@ const PurpleIcon = () => <span style={{fontWeight: 'bold', color: '#a855f7'}}>P<
 const BlackIcon = () => <span style={{fontWeight: 'bold', color: '#000000'}}>B</span>
 const GrayIcon = () => <span style={{fontWeight: 'bold', color: '#6b7280'}}>G</span>
 
+// Superscript decorator for reference numbers
+const SuperscriptIcon = () => <span style={{fontSize: '10px', verticalAlign: 'super'}}>x²</span>
+const SuperscriptDecorator = (props: any) => (
+  <sup style={{fontSize: '0.75em', verticalAlign: 'super', color: '#3b82f6'}}>{props.children}</sup>
+)
+
 export const postType = defineType({
   name: 'post',
   title: 'Article',
@@ -115,8 +121,25 @@ export const postType = defineType({
               {title: 'Black', value: 'color-black', icon: BlackIcon, component: ColorDecorator('#000000')},
               {title: 'Gray', value: 'color-gray', icon: GrayIcon, component: ColorDecorator('#6b7280')},
               {title: 'Custom Color', value: 'textColor', icon: RedIcon},
+              {title: 'Superscript (ref)', value: 'sup', icon: SuperscriptIcon, component: SuperscriptDecorator},
             ],
-            annotations: [],
+            annotations: [
+              {
+                name: 'referenceLink',
+                type: 'object',
+                title: 'Reference Link',
+                icon: SuperscriptIcon,
+                fields: [
+                  {
+                    name: 'refNumber',
+                    type: 'number',
+                    title: 'Reference Number',
+                    description: 'e.g., 2 to link to reference #2',
+                    validation: (rule: any) => rule.required().min(1),
+                  }
+                ]
+              }
+            ],
           },
         },
         {
@@ -167,12 +190,6 @@ export const postType = defineType({
           }
         },
       ],
-    }),
-    defineField({
-      name: 'references',
-      title: 'References',
-      type: 'text',
-      description: 'List each reference on a new line. Format: 1 - Reference text',
     }),
   ],
 })

@@ -204,6 +204,26 @@ const components: PortableTextComponents = {
     em: ({ children }) => <em>{children}</em>,
     underline: ({ children }) => <span style={{ textDecoration: 'underline' }}>{children}</span>,
     'strike-through': ({ children }) => <del>{children}</del>,
+    // Superscript for reference numbers
+    sup: ({ children }) => (
+      <sup style={{ fontSize: '0.75em', verticalAlign: 'super', color: '#3b82f6' }}>{children}</sup>
+    ),
+    // Reference link annotation - links to #ref-N anchor
+    referenceLink: ({ children, value }) => (
+      <a 
+        href={`#ref-${value?.refNumber}`} 
+        className="reference-link-inline"
+        style={{ 
+          fontSize: '0.75em', 
+          verticalAlign: 'super', 
+          color: '#3b82f6', 
+          textDecoration: 'none',
+          cursor: 'pointer'
+        }}
+      >
+        {children}
+      </a>
+    ),
   },
 }
 
