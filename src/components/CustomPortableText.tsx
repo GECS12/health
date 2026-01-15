@@ -157,8 +157,11 @@ const components: PortableTextComponents = {
     },
   },
   block: {
-    normal: ({ children }) => {
-      const text = Array.isArray(children) ? children.join('') : (typeof children === 'string' ? children : '')
+    normal: ({ children, value }) => {
+      // Robustly get text from the block value
+      const text = value?.children 
+        ? value.children.map((c: any) => c.text).join('') 
+        : (Array.isArray(children) ? children.join('') : (typeof children === 'string' ? children : ''));
       
       // Pattern to detect metadata lines from Word imports:
       // e.g., "Admin (https://...) May 24, 2017 No Comments..."
@@ -166,6 +169,16 @@ const components: PortableTextComponents = {
       const isUrlOnly = text.match(/^https?:\/\/[^\s]+$/)
       
       if (isMetadata || isUrlOnly) return null
+      
+      // Detect reference lines: "1 – Text" or "1. Text" or "1) Text"
+      // Covers: hyphen, en-dash, em-dash, dot, parenthesis
+      const refMatch = text.match(/^(\d+)\s*[–\-\—\.\)]\s+/)
+      
+      if (refMatch) {
+        const refNumber = refMatch[1]
+        // Add scroll-margin-top for sticky headers/padding
+        return <p id={`ref-${refNumber}`} className="reference-item" style={{ scrollMarginTop: '100px' }}><CitationsWrapper>{children}</CitationsWrapper></p>
+      }
       
       return <p><CitationsWrapper>{children}</CitationsWrapper></p>
     },
@@ -220,6 +233,17 @@ const components: PortableTextComponents = {
           textDecoration: 'none',
           cursor: 'pointer'
         }}
+      >
+        {children}
+      </a>
+    ),
+    // Link annotation
+    link: ({ children, value }) => (
+      <a 
+        href={value?.href} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="portable-text-link"
       >
         {children}
       </a>

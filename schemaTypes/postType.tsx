@@ -1,5 +1,5 @@
 import {defineField, defineType} from 'sanity'
-import {DropIcon} from '@sanity/icons'
+import {DropIcon, DocumentTextIcon} from '@sanity/icons'
 import React from 'react'
 import {DocxImporter} from '../src/studio/DocxImporter'
 
@@ -132,21 +132,19 @@ export const postType = defineType({
             ],
             annotations: [
               {
-                name: 'referenceLink',
+                name: 'link',
                 type: 'object',
-                title: 'Reference Link',
-                icon: SuperscriptIcon,
+                title: 'URL',
                 fields: [
                   {
-                    name: 'refNumber',
-                    type: 'number',
-                    title: 'Reference Number',
-                    description: 'e.g., 2 to link to reference #2',
-                    validation: (rule: any) => rule.required().min(1),
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
                   }
                 ]
-              }
+              },
             ],
+
           },
         },
         {

@@ -8,6 +8,9 @@ import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { getFlattenedArticles } from '@/lib/navigation'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { Comments } from '@/components/Comments'
+import { Bibliography } from '@/components/Bibliography'
+import { EditButton } from '@/components/EditButton'
+
 
 interface ArticleProps {
   params: Promise<{ slug: string }>;
@@ -27,7 +30,7 @@ export async function generateStaticParams() {
 export default async function ArticlePage({ params }: ArticleProps) {
   const { slug } = await params
 
-  // Fetch current article
+  // Fetch current article with citations
   const article = await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
@@ -38,6 +41,20 @@ export default async function ArticlePage({ params }: ArticleProps) {
         parent->{
           title
         }
+      },
+      "citations": references[]->{
+        _id,
+        citationId,
+        authors,
+        year,
+        title,
+        source,
+        volume,
+        issue,
+        pages,
+        doi,
+        url,
+        notes
       }
     }
   `, { slug })
@@ -82,7 +99,13 @@ export default async function ArticlePage({ params }: ArticleProps) {
           </ScrollReveal>
         </div>
 
+        {article.citations && article.citations.length > 0 && (
+          <Bibliography citations={article.citations} />
+        )}
+
         <Comments postId={article._id} />
+        
+        <EditButton documentId={article._id} />
         
         <nav className="article-footer-nav">
           <div className="footer-nav-grid">

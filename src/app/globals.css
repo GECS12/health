@@ -2107,3 +2107,252 @@ a {
     padding: 24px;
   }
 }
+
+/* ========================================
+   Citation Styles
+   ======================================== */
+
+/* Inline Citation Markers */
+.citation-marker-wrapper {
+  position: relative;
+  display: inline;
+}
+
+/* Reference Item Styles - Forced Vertical List */
+.reference-item {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  padding-left: 0;
+  clear: both;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.reference-item:target {
+  background-color: var(--accent-warm-light);
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.citation-marker {
+  font-family: var(--font-sans);
+  font-size: 0.75em;
+  vertical-align: super;
+  color: var(--accent-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0 2px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.citation-marker:hover {
+  color: var(--accent-warm);
+  transform: scale(1.1);
+}
+
+/* Citation Tooltip */
+.citation-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.citation-tooltip-content {
+  background: white;
+  border: 1px solid var(--accent-light);
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-elevated);
+  max-width: 320px;
+  min-width: 200px;
+  text-align: left;
+}
+
+[data-theme='dark'] .citation-tooltip-content {
+  background: var(--sidebar-bg);
+  border-color: var(--border-color);
+}
+
+.citation-tooltip-authors {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.citation-tooltip-year {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.citation-tooltip-title {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.citation-tooltip-source {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Bibliography Section */
+.article-bibliography {
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: 2px solid var(--border-color);
+}
+
+.bibliography-header h2 {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.bibliography-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: bibliography-counter;
+}
+
+.bibliography-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+  scroll-margin-top: 100px; /* For smooth scrolling */
+}
+
+.bibliography-item:hover {
+  background: var(--hover-bg);
+}
+
+.bibliography-item.highlight-ref {
+  background: var(--accent-warm-light);
+  transform: translateX(4px);
+}
+
+.bibliography-number {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-color);
+  flex-shrink: 0;
+  min-width: 28px;
+}
+
+.bibliography-content {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.bibliography-authors {
+  font-weight: 600;
+}
+
+.bibliography-year {
+  color: var(--text-secondary);
+}
+
+.bibliography-title {
+  font-style: italic;
+}
+
+.bibliography-source {
+  font-weight: 500;
+}
+
+.bibliography-doi,
+.bibliography-url {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.bibliography-doi a,
+.bibliography-url a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.bibliography-doi a:hover,
+.bibliography-url a:hover {
+  color: var(--accent-warm);
+  text-decoration: underline;
+}
+
+.bibliography-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+}
+
+.bibliography-notes {
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--hover-bg);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Portable Text Link Styles */
+.portable-text-link {
+  color: var(--accent-color);
+  text-decoration: underline;
+  transition: color var(--transition-fast);
+}
+
+.portable-text-link:hover {
+  color: var(--accent-warm);
+}
+
+/* Responsive Citation Styles */
+@media (max-width: 768px) {
+  .citation-tooltip {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+  
+  .citation-tooltip-content {
+    max-width: 240px;
+  }
+  
+  .article-bibliography {
+    margin-top: 56px;
+    padding-top: 32px;
+  }
+  
+  .bibliography-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
