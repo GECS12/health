@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Book, FileText } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
@@ -64,10 +65,10 @@ export function SidebarContent({ tree }: { tree: Section[] }) {
   return (
     <nav className="sidebar-nav">
       <div className="section-group">
-        <a href="/" className="home-link">
+        <Link href="/" className="home-link">
           <Book size={20} style={{ marginRight: '10px', opacity: 0.8 }} />
           <span className="section-title-text">Introdução</span>
-        </a>
+        </Link>
       </div>
       {tree.map(section => (
         <SectionView key={section._id} section={section} depth={0} />

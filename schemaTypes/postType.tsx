@@ -93,6 +93,13 @@ export const postType = defineType({
       description: 'Order within the chapter',
     }),
     defineField({
+      name: 'isHomePage',
+      type: 'boolean',
+      title: 'Home Page',
+      description: 'Check this to show this article on the landing page (Introdução)',
+      initialValue: false,
+    }),
+    defineField({
       name: 'body',
       type: 'array',
       of: [

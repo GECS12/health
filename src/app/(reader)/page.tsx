@@ -8,9 +8,9 @@ export default async function Home() {
   let article = null
 
   try {
-    // Fetch the first article to show as home
+    // Fetch the article marked as home, or fallback to order/updates
     article = await client.fetch(`
-      *[_type == "post"] | order(order asc) [0] {
+      *[_type == "post"] | order(isHomePage desc, _updatedAt desc, order asc) [0] {
         title,
         body
       }
