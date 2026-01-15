@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Book, FileText } from 'lucide-react';
+import { ChevronRight, Book } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
 
 interface Post {
@@ -125,7 +125,6 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
                   key={post.slug} 
                   href={`/${post.slug}`} 
                   title={formatTitle(post.title)}
-                  icon={FileText}
                 />
               ))}
               
