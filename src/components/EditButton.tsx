@@ -2,24 +2,44 @@
 
 import { Edit } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
 interface EditButtonProps {
   documentId: string;
 }
 
-export function EditButton({ documentId }: EditButtonProps) {
+function EditButtonContent({ documentId }: EditButtonProps) {
+  const searchParams = useSearchParams();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Show if ?admin=true is in URL OR if we are in development mode
+    if (searchParams.get('admin') === 'true' || process.env.NODE_ENV === 'development') {
+      setIsVisible(true);
+    }
+  }, [searchParams]);
+
+  if (!isVisible) return null;
+
   // Use Sanity Intent URL for deep linking
-  // This usually works out of the box with default studio structure
   const editUrl = `/admin/intent/edit/id=${documentId};type=post`;
 
   return (
     <Link 
       href={editUrl}
-      className="mobile-edit-btn lg:absolute lg:top-0 lg:right-0 inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-200"
-      title="Edit this article"
+      className="absolute top-0 right-0 p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
+      title="Editar artigo (Admin)"
     >
-      <Edit size={14} />
-      <span>Editar</span>
+      <Edit size={16} />
     </Link>
+  );
+}
+
+export function EditButton(props: EditButtonProps) {
+  return (
+    <Suspense fallback={null}>
+      <EditButtonContent {...props} />
+    </Suspense>
   );
 }
