@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Book, FileText } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
 
 interface Post {
@@ -65,6 +65,7 @@ export function SidebarContent({ tree }: { tree: Section[] }) {
     <nav className="sidebar-nav">
       <div className="section-group">
         <a href="/" className="home-link">
+          <Book size={20} style={{ marginRight: '10px', opacity: 0.8 }} />
           <span className="section-title-text">Introdução</span>
         </a>
       </div>
@@ -86,10 +87,22 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
       >
-        <span className="section-title-text">{formatTitle(section.title)}</span>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {/* Depth 0 is Parts, Depth 1 is Chapters - Use Book icon for both but maybe different sizes/colors via CSS, or just here */}
+          <Book 
+            size={depth === 0 ? 18 : 16} 
+            className="section-icon-visual" 
+            style={{ 
+              marginRight: '10px', 
+              opacity: depth === 0 ? 0.9 : 0.6,
+              color: 'var(--accent-color)'
+            }} 
+          />
+          <span className="section-title-text">{formatTitle(section.title)}</span>
+        </div>
         {hasContent && (
           <ChevronRight 
-            size={18} 
+            size={16} 
             className={`section-chevron ${isOpen ? 'chevron-open' : ''}`}
           />
         )}
@@ -111,6 +124,7 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
                   key={post.slug} 
                   href={`/${post.slug}`} 
                   title={formatTitle(post.title)}
+                  icon={FileText}
                 />
               ))}
               

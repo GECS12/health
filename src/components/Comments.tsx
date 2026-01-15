@@ -29,6 +29,7 @@ export function Comments({ postId }: CommentsProps) {
     content: '',
   })
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   // Fetch comments
   useEffect(() => {
@@ -154,111 +155,142 @@ export function Comments({ postId }: CommentsProps) {
     )
   }
 
+
+
   return (
     <section className="comments-section">
-      <div className="comments-header">
-        <MessageSquare size={20} />
-        <h2 className="comments-title">
-          Comentários {comments.length > 0 && `(${comments.length})`}
-        </h2>
-      </div>
-
-      {loading ? (
-        <div className="comments-loading">
-          <Loader2 className="animate-spin" size={20} />
-          <span>A carregar comentários...</span>
+      <button 
+        className="comments-header-toggle" 
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          width: '100%',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '0',
+          marginBottom: isExpanded ? '32px' : '0'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <MessageSquare size={20} className="text-accent" />
+          <h2 className="comments-title">
+            Comentários {comments.length > 0 && `(${comments.length})`}
+          </h2>
         </div>
-      ) : (
-        <>
-          {topLevel.length === 0 ? (
-            <p className="comments-empty">Ainda não há comentários. Seja o primeiro a comentar!</p>
+        <div style={{ 
+          transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.2s ease'
+        }}>
+          {/* ChevronDown/Up simulation or import icon (I didn't import ChevronDown, using text or existing imports) 
+             I have Loader2, MessageSquare, Send. I'll stick to a simple caret or add ChevronDown to imports. 
+          */}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </button>
+
+      {isExpanded && (
+        <div className="comments-body animate-in slide-in-from-top-4 fade-in duration-300">
+          {loading ? (
+            <div className="comments-loading">
+              <Loader2 className="animate-spin" size={20} />
+              <span>A carregar comentários...</span>
+            </div>
           ) : (
-            <div className="comments-list">
-              {topLevel.map((comment) => (
-                <CommentItem key={comment._id} comment={comment} />
-              ))}
-            </div>
-          )}
-
-          {message && (
-            <div className={`comment-message comment-message-${message.type}`}>
-              {message.text}
-            </div>
-          )}
-
-          {(showForm || topLevel.length === 0) && (
-            <form className="comment-form" onSubmit={handleSubmit}>
-              {replyTo && (
-                <div className="comment-reply-indicator">
-                  A responder a um comentário
-                  <button
-                    type="button"
-                    className="comment-cancel-reply"
-                    onClick={() => {
-                      setReplyTo(null)
-                      setShowForm(false)
-                    }}
-                  >
-                    Cancelar
-                  </button>
+            <>
+              {topLevel.length === 0 ? (
+                <p className="comments-empty">Ainda não há comentários. Seja o primeiro a comentar!</p>
+              ) : (
+                <div className="comments-list">
+                  {topLevel.map((comment) => (
+                    <CommentItem key={comment._id} comment={comment} />
+                  ))}
                 </div>
               )}
-              <div className="comment-form-row">
-                <input
-                  type="text"
-                  placeholder="Nome"
-                  value={formData.author}
-                  onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                  required
-                  className="comment-input"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="comment-input"
-                />
-              </div>
-              <textarea
-                placeholder="Escreva o seu comentário..."
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                required
-                rows={4}
-                className="comment-textarea"
-              />
-              <button
-                type="submit"
-                disabled={submitting}
-                className="comment-submit-btn"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="animate-spin" size={16} />
-                    A enviar...
-                  </>
-                ) : (
-                  <>
-                    <Send size={16} />
-                    Enviar Comentário
-                  </>
-                )}
-              </button>
-            </form>
+    
+              {message && (
+                <div className={`comment-message comment-message-${message.type}`}>
+                  {message.text}
+                </div>
+              )}
+    
+              {(showForm || topLevel.length === 0) && (
+                <form className="comment-form" onSubmit={handleSubmit}>
+                  {replyTo && (
+                    <div className="comment-reply-indicator">
+                      A responder a um comentário
+                      <button
+                        type="button"
+                        className="comment-cancel-reply"
+                        onClick={() => {
+                          setReplyTo(null)
+                          setShowForm(false)
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  )}
+                  <div className="comment-form-row">
+                    <input
+                      type="text"
+                      placeholder="Nome"
+                      value={formData.author}
+                      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                      required
+                      className="comment-input"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                      className="comment-input"
+                    />
+                  </div>
+                  <textarea
+                    placeholder="Escreva o seu comentário..."
+                    value={formData.content}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    required
+                    rows={4}
+                    className="comment-textarea"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="comment-submit-btn"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="animate-spin" size={16} />
+                        A enviar...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={16} />
+                        Enviar Comentário
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+    
+              {!showForm && topLevel.length > 0 && (
+                <button
+                  className="comment-show-form-btn"
+                  onClick={() => setShowForm(true)}
+                >
+                  <MessageSquare size={16} />
+                  Adicionar Comentário
+                </button>
+              )}
+            </>
           )}
-
-          {!showForm && topLevel.length > 0 && (
-            <button
-              className="comment-show-form-btn"
-              onClick={() => setShowForm(true)}
-            >
-              <MessageSquare size={16} />
-              Adicionar Comentário
-            </button>
-          )}
-        </>
+        </div>
       )}
     </section>
   )

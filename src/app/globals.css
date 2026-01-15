@@ -20,28 +20,28 @@
   --toc-width: 320px;
 
   /* Clean & Minimal Palette */
-  --bg-color: #FFFFFF;
-  --sidebar-bg: #FAFAFA;
-  --toc-bg: var(--sidebar-bg);
+  --bg-color: #FAFAFA; /* Off-white background */
+  --sidebar-bg: #FFFFFF; /* Pure white sidebar to stand out slightly against off-white body */
+  --toc-bg: var(--bg-color);
 
-  --text-primary: #111;
-  --text-secondary: #444;
-  --text-muted: #777;
+  --text-primary: #1A1A1A; /* Sharper black */
+  --text-secondary: #555555;
+  --text-muted: #888888;
 
-  --accent-color: #8B7355;
-  --accent-light: #A99077;
-  --border-color: #EAEAEA;
-  --active-bg: rgba(180, 140, 90, 0.12);
-  --hover-bg: rgba(0, 0, 0, 0.02);
+  --accent-color: #2C3E50; /* Deep Blue Grey for "book" feel */
+  --accent-light: #5D6D7E;
+  --border-color: #E5E5E5;
+  --active-bg: rgba(44, 62, 80, 0.05); /* Subtle blue tint */
+  --hover-bg: rgba(0, 0, 0, 0.03);
 
   --font-serif: var(--font-serif, "EB Garamond", Georgia, serif);
-  --font-sans: var(--font-serif);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Subtle Motion */
-  --transition-fast: 0.12s ease;
-  --transition-normal: 0.2s ease;
-  --transition-smooth: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --transition-elegant: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-elegant: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Minimal Depth */
   --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -83,17 +83,17 @@
 }
 
 [data-theme='dark'] {
-  --bg-color: #141312; /* Warm Charcoal */
-  --sidebar-bg: #0F0E0D; /* Deep Espresso */
-  --toc-bg: var(--sidebar-bg);
-  --text-primary: #F5F3F0; /* Soft Cream White */
-  --text-secondary: #9A948A; /* Warm Stone */
-  --text-muted: #6E6860;
-  --border-color: #2A2724; /* Subtle seam */
-  --accent-color: #C9A982; /* Warm Brass */
-  --accent-light: #D4BC9A;
-  --active-bg: rgba(201, 169, 130, 0.08);
-  --hover-bg: rgba(201, 169, 130, 0.05);
+  --bg-color: #111111; /* Deep charcoal */
+  --sidebar-bg: #181818; /* Slightly lighter */
+  --toc-bg: var(--bg-color);
+  --text-primary: #EDEDED;
+  --text-secondary: #A0A0A0;
+  --text-muted: #666666;
+  --border-color: #2A2A2A;
+  --accent-color: #AAB7C4; /* Cool blue-grey text */
+  --accent-light: #5D6D7E;
+  --active-bg: rgba(255, 255, 255, 0.05);
+  --hover-bg: rgba(255, 255, 255, 0.03);
 }
 
 * {
@@ -188,6 +188,7 @@ a {
   top: 0;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.02); /* Subtle separation shadow */
   z-index: 10;
 }
 
@@ -473,8 +474,33 @@ a {
   font-family: var(--font-sans);
   font-size: 13.5px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: var(--text-muted);
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breadcrumb-link {
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb-link:hover {
+  color: var(--accent-color);
+}
+
+.breadcrumb-separator {
+  opacity: 0.5;
+  color: var(--text-muted);
+}
+
+.breadcrumb-item.active {
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 /* Elegant Article Header Divider */
@@ -800,7 +826,7 @@ a {
   }
 
   .main-content { 
-    padding: 32px 20px; 
+    padding: 24px 20px; /* Reduced top padding */
     max-width: 100vw;
     overflow-x: hidden;
   }
@@ -954,7 +980,7 @@ a {
   min-height: 100vh;
   overflow-y: auto;
   background-color: var(--bg-color);
-  padding: 40px;
+  padding: 24px 40px 64px; /* Reduced top padding from 40px, increased bottom */
 }
 
 @media (max-width: 1024px) {
@@ -1334,12 +1360,15 @@ a {
   border: 1px solid var(--border-color);
   border-radius: 4px;
   transition: all var(--transition-normal);
-  background: transparent;
+  background: var(--bg-color); /* Card style */
+  box-shadow: var(--shadow-small); /* Subtle shadow */
 }
 
 .footer-nav-item:hover {
-  background: var(--hover-bg);
+  background: var(--bg-color);
   border-color: var(--accent-color);
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: var(--shadow-medium);
 }
 
 .footer-nav-item.next {
@@ -1350,6 +1379,18 @@ a {
 .footer-nav-item.prev {
   text-align: left;
   align-items: flex-start;
+}
+
+.footer-nav-item svg {
+  transition: transform var(--transition-fast);
+}
+
+.footer-nav-item.next:hover svg {
+  transform: translateX(4px);
+}
+
+.footer-nav-item.prev:hover svg {
+  transform: translateX(-4px);
 }
 
 /* Comments Section — Quiet & Refined */
@@ -1510,20 +1551,22 @@ a {
 .comment-input,
 .comment-textarea {
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 15px;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--bg-color);
   color: var(--text-primary);
-  transition: border-color var(--transition-normal);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-soft); /* Added subtle shadow */
 }
 
 .comment-input:focus,
 .comment-textarea:focus {
   outline: none;
   border-color: var(--accent-color);
+  box-shadow: var(--shadow-medium); /* Elevated shadow on focus */
 }
 
 .comment-textarea {
@@ -1537,23 +1580,26 @@ a {
 .comment-show-form-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
+  gap: 10px;
+  padding: 12px 24px;
   background: var(--accent-color);
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-normal);
-  margin-top: 16px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-medium);
 }
 
 .comment-submit-btn:hover:not(:disabled),
 .comment-show-form-btn:hover {
   background: var(--text-primary);
+  transform: translateY(-2px); /* Hover animation */
+  box-shadow: var(--shadow-elevated);
 }
 
 .comment-submit-btn:disabled {
@@ -1566,11 +1612,14 @@ a {
   color: var(--accent-color);
   border: 1px solid var(--accent-color);
   margin-top: 0;
+  box-shadow: none; /* No shadow by default for secondary */
 }
 
 .comment-show-form-btn:hover {
   background: var(--accent-color);
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
 .comment-message {

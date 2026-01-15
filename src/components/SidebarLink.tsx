@@ -1,10 +1,9 @@
-'use client';
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMobileMenu } from '@/context/MobileMenuContext';
+import { LucideIcon } from 'lucide-react';
 
-export function SidebarLink({ href, title }: { href: string; title: string }) {
+export function SidebarLink({ href, title, icon: Icon }: { href: string; title: string, icon?: LucideIcon }) {
   const pathname = usePathname();
   const { closeAll } = useMobileMenu();
   
@@ -18,6 +17,7 @@ export function SidebarLink({ href, title }: { href: string; title: string }) {
       className={`sub-link ${isActive ? 'active' : ''}`}
       onClick={closeAll}
     >
+      {Icon && <Icon size={14} className="sidebar-link-icon" style={{ marginRight: '8px', opacity: isActive ? 1 : 0.7 }} />}
       {title}
     </Link>
   );
