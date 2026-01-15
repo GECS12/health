@@ -15,11 +15,11 @@ export function EditButton({ documentId }: EditButtonProps) {
   return (
     <Link 
       href={editUrl}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all border border-gray-200 group"
-      title="Edit this article in Sanity"
+      className="mobile-edit-btn lg:absolute lg:top-0 lg:right-0 inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-200"
+      title="Edit this article"
     >
-      <Edit size={18} className="text-blue-600 group-hover:scale-110 transition-transform" />
-      <span className="font-medium text-sm">Editar</span>
+      <Edit size={14} />
+      <span>Editar</span>
     </Link>
   );
 }

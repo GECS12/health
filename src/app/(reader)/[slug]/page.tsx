@@ -72,7 +72,8 @@ export default async function ArticlePage({ params }: ArticleProps) {
   return (
     <PageTransition>
       <article className="article-container">
-        <header className="article-header">
+        <header className="article-header relative group">
+           <EditButton documentId={article._id} />
            <h1 className="article-title">{article.title}</h1>
            <Breadcrumbs 
              part={article.section?.parent?.title} 
@@ -104,8 +105,6 @@ export default async function ArticlePage({ params }: ArticleProps) {
         )}
 
         <Comments postId={article._id} />
-        
-        <EditButton documentId={article._id} />
         
         <nav className="article-footer-nav">
           <div className="footer-nav-grid">
