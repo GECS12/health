@@ -14,8 +14,8 @@ interface ArticleProps {
 }
 
 export const dynamicParams = true
-// Revalidate immediately - No caching, always fresh content
-export const revalidate = 0
+// Revalidate every 60 seconds - ISR for better performance
+export const revalidate = 60
 
 export async function generateStaticParams() {
   const posts = await client.fetch(`*[_type == "post"]{ "slug": slug.current }`)

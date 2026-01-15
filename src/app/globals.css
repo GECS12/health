@@ -311,7 +311,8 @@ a {
   font-weight: 800;
   text-shadow: 0.1px 0 0 currentColor;
   letter-spacing: -0.01em;
-  color: #000;
+  letter-spacing: -0.01em;
+  color: #222; /* Softer than pure black */
   cursor: pointer;
   margin-top: 28px; /* Distinct separation */
 }
@@ -330,8 +331,9 @@ a {
   border: none;
   padding: 10px 16px; /* Medium padding */
   font-family: var(--font-serif);
-  font-size: 17px; /* Increased size */
-  color: #151515;
+  font-family: var(--font-serif);
+  font-size: 17px; 
+  color: #333; /* Softer than previous #151515 */
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
@@ -585,16 +587,15 @@ a {
   hyphens: auto;
 }
 
-/* Drop Cap - Classic Book Aesthetic */
+/* Drop Cap removed per user request */
 .portable-text > p:first-of-type::first-letter {
-  float: left;
-  font-family: var(--font-serif);
-  font-size: 4.2em;
-  line-height: 0.8;
-  padding-right: 12px;
-  padding-top: 6px;
-  color: var(--accent-color);
-  font-weight: 500;
+  float: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  color: inherit;
+  font-weight: inherit;
 }
 
 .portable-text figure {
