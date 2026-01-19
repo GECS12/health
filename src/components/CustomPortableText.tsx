@@ -58,7 +58,18 @@ const ReferenceItem = ({ children }: { children: any }) => {
           width: '100%'
         }}
       >
-        {children}
+        <a 
+          href={`#cite-ref-${refNumber}`}
+          className="back-link-to-citation"
+          title={`Voltar para citação ${refNumber}`}
+          style={{ 
+            color: 'inherit', 
+            textDecoration: 'none',
+            display: 'block'
+          }}
+        >
+          {children}
+        </a>
       </span>
     )
   }
