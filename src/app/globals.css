@@ -143,7 +143,7 @@ body {
   margin: 0;
   font-family: var(--font-serif);
   line-height: 1.75;
-  font-size: 20px; /* Increased from 18px for better legibility */
+  font-size: 21px; /* Increased from 20px as requested */
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -600,7 +600,7 @@ a {
 /* Portable Text Styles — Reading Focused, Quiet Elegance */
 .portable-text {
   font-family: var(--font-serif);
-  font-size: 19.5px; /* Increased from 17.5px */
+  font-size: 20.5px; /* Increased from 19.5px */
   line-height: 1.85;
   color: var(--text-primary);
   letter-spacing: 0.005em;
