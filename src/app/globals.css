@@ -20,8 +20,8 @@
   --toc-width: 320px;
 
   /* Clean & Minimal Palette */
-  --bg-color: #FAFAFA; /* Off-white background */
-  --sidebar-bg: #FFFFFF; /* Pure white sidebar to stand out slightly against off-white body */
+  --bg-color: #FFFFFF; /* Pure white background as requested */
+  --sidebar-bg: #FFFFFF;
   --toc-bg: var(--bg-color);
 
   --text-primary: #1A1A1A; /* Sharper black */
@@ -143,7 +143,7 @@ body {
   margin: 0;
   font-family: var(--font-serif);
   line-height: 1.75;
-  font-size: 18px;
+  font-size: 20px; /* Increased from 18px for better legibility */
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -190,7 +190,6 @@ a {
   top: 0;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
-  box-shadow: 2px 0 12px rgba(0,0,0,0.02); /* Subtle separation shadow */
   z-index: 10;
 }
 
@@ -242,13 +241,13 @@ a {
   display: block;
   background-color: transparent;
   color: #000; /* Match Parts color */
-  padding: 14px 20px 6px 20px; /* Match Parts padding exactly */
+  padding: 10px 20px 4px 20px; /* Reduced vertical padding */
   font-family: var(--font-serif);
-  font-size: 22px; /* Bigger on left bar */
+  font-size: 24px; /* Increased font size */
   font-weight: 800; /* Match Parts weight */
   text-shadow: 0.1px 0 0 currentColor; /* Smudge blacker */
   text-decoration: none;
-  margin-bottom: 2px; /* Closer to Saude */
+  margin-bottom: 0; /* More compact */
   width: 100%;
   border-radius: 0;
 }
@@ -294,7 +293,7 @@ a {
 /* Line for nested groups (Chapters inside Parts) */
 .section-group .section-group {
   position: relative;
-  margin-left: 20px; /* Reduced margin */
+  margin-left: 16px; /* Reduced from 20px */
   padding-left: 0;
   border-left: none; /* Handled by sub-links now */
 }
@@ -308,16 +307,15 @@ a {
   text-align: left;
   background: none;
   border: none;
-  padding: 24px 20px 6px 20px; /* Reduced bottom padding */
+  padding: 14px 20px 4px 20px; /* Further reduced from 18px */
   font-family: var(--font-serif);
-  font-size: 21px; /* Increased size */
+  font-size: 24px; /* Maintaining increased size */
   font-weight: 800;
   text-shadow: 0.1px 0 0 currentColor;
   letter-spacing: -0.01em;
-  letter-spacing: -0.01em;
   color: #222; /* Softer than pure black */
   cursor: pointer;
-  margin-top: 24px; /* Reduced separation */
+  margin-top: 12px; /* Reduced from 16px */
 }
 
 .section-group:first-child .section-label.depth-0 {
@@ -332,16 +330,15 @@ a {
   width: 100%;
   background: none;
   border: none;
-  padding: 8px 16px; /* Reduced padding */
+  padding: 4px 16px; /* Further reduced from 6px */
   font-family: var(--font-serif);
-  font-family: var(--font-serif);
-  font-size: 17px; 
+  font-size: 18px; /* Slightly reduced from 18.5px for clearer hierarchy */
   color: #333; /* Softer than previous #151515 */
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
   font-weight: 600;
-  margin-top: 4px; /* Reduced margin */
+  margin-top: 1px; /* Reduced from 2px */
 }
 
 .section-label.depth-1:hover {
@@ -400,14 +397,14 @@ a {
 .sub-link {
   display: flex;
   align-items: center;
-  padding: 7px 16px 7px 28px; /* Reduced padding */
+  padding: 4px 16px 4px 28px; /* Further reduced from 5px */
   font-family: var(--font-serif);
-  font-size: 15.5px;
+  font-size: 16px; /* Reduced from 17px as requested */
   color: #444;
   text-decoration: none;
   transition: all var(--transition-fast);
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.35; /* Further reduced from 1.4 */
   position: relative;
   border-left: 3px solid transparent;
   margin-left: -1px;
@@ -552,8 +549,13 @@ a {
   padding: 40px 24px;
   display: flex;
   flex-direction: column;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.toc::-webkit-scrollbar {
+  display: none;
 }
 
 .toc::-webkit-scrollbar {
@@ -598,10 +600,16 @@ a {
 /* Portable Text Styles — Reading Focused, Quiet Elegance */
 .portable-text {
   font-family: var(--font-serif);
-  font-size: 17.5px;
+  font-size: 19.5px; /* Increased from 17.5px */
   line-height: 1.85;
   color: var(--text-primary);
   letter-spacing: 0.005em;
+}
+
+/* Ensure citations and technical links have a box model for reliable intersection detection */
+.citation-link, .reference-link-inline {
+  display: inline-block;
+  min-width: 0.5ch;
 }
 
 .portable-text h1 {

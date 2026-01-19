@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useMobileMenu } from '@/context/MobileMenuContext';
 import { usePathname } from 'next/navigation';
@@ -16,19 +16,30 @@ interface TOCItem {
 export function TableOfContents() {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const navRef = useRef<HTMLElement>(null);
   const { closeAll } = useMobileMenu();
   const pathname = usePathname();
 
   useEffect(() => {
-    // Select container to scope our search
     const portableText = document.querySelector('.portable-text');
     if (!portableText) return;
 
-    // Get all potential candidates including citation links
     const candidates = Array.from(portableText.querySelectorAll('h2, h3, blockquote, p, a.citation-link, a.reference-link-inline'));
-    
-    const validNodes: Element[] = [];
     const elements: TOCItem[] = [];
+
+    const extractTextWithSpaces = (node: Node): string => {
+      let text = '';
+      node.childNodes.forEach(child => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          text += child.textContent;
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          const element = child as Element;
+          const isWordBreakTag = ['BR', 'P', 'DIV', 'SPAN', 'STRONG', 'B', 'EM', 'I'].includes(element.tagName);
+          text += (isWordBreakTag ? ' ' : '') + extractTextWithSpaces(element) + (isWordBreakTag ? ' ' : '');
+        }
+      });
+      return text;
+    };
 
     candidates.forEach((elem, index) => {
       const tag = elem.tagName.toLowerCase();
@@ -36,61 +47,32 @@ export function TableOfContents() {
       let type: 'header' | 'quote' | 'citation' = 'header';
       let level = 2;
 
-      // Helper to extract text with spaces to avoid "gordurasão"
-      const extractTextWithSpaces = (node: Node): string => {
-        let text = '';
-        node.childNodes.forEach(child => {
-          if (child.nodeType === Node.TEXT_NODE) {
-            text += child.textContent;
-          } else if (child.nodeType === Node.ELEMENT_NODE) {
-            const element = child as Element;
-            const isWordBreakTag = ['BR', 'P', 'DIV', 'SPAN', 'STRONG', 'B', 'EM', 'I'].includes(element.tagName);
-            text += (isWordBreakTag ? ' ' : '') + extractTextWithSpaces(element) + (isWordBreakTag ? ' ' : '');
-          }
-        });
-        return text;
-      };
-
-      // Handle Headers
       if (tag === 'h2') {
         rawText = extractTextWithSpaces(elem);
         level = 2;
       } else if (tag === 'h3') {
         rawText = extractTextWithSpaces(elem);
         level = 3;
-      } 
-      // Handle Blockquotes
-      else if (tag === 'blockquote') {
+      } else if (tag === 'blockquote') {
         rawText = extractTextWithSpaces(elem);
         type = 'quote';
         level = 4;
-      } 
-      // Handle Paragraphs with Bold Start (Pseudo-headers)
-      else if (tag === 'p') {
+      } else if (tag === 'p') {
         const firstChild = elem.firstElementChild;
         if (firstChild && (firstChild.tagName === 'STRONG' || firstChild.tagName === 'B')) {
             const boldText = extractTextWithSpaces(firstChild).trim();
             const pText = extractTextWithSpaces(elem).trim();
             const isLikelyHeader = boldText.length > 2 && boldText.length < 100;
-
             if (isLikelyHeader && pText.startsWith(boldText)) {
               rawText = boldText;
               level = 4;
-            } else {
-              return;
-            }
-        } else {
-          return;
-        }
-      }
-      // Handle Citations
-      else if (tag === 'a' && (elem.classList.contains('citation-link') || elem.classList.contains('reference-link-inline'))) {
+            } else return;
+        } else return;
+      } else if (tag === 'a' && (elem.classList.contains('citation-link') || elem.classList.contains('reference-link-inline'))) {
         const refNum = elem.textContent?.trim() || '';
         if (!refNum) return;
-
         type = 'citation';
         level = 5;
-        
         const parent = elem.closest('p, blockquote, li');
         if (parent) {
           const parentText = extractTextWithSpaces(parent).replace(/\s+/g, ' ').trim();
@@ -103,15 +85,10 @@ export function TableOfContents() {
 
       if (rawText.trim()) {
         let displayText = rawText.replace(/\s+/g, ' ').trim();
-
         if (type !== 'citation') {
           displayText = displayText.replace(/\[\d+(?:[\s,\-]*\d+)*\]/g, ' ');
         }
-        
-        displayText = displayText.replace(/\s+([.,;!?])/g, '$1');
-        displayText = displayText.replace(/\s+/g, ' ').trim();
-        displayText = displayText.replace(/^[.,;!?\-\—\s]+|[.,;!?\-\—\s]+$/g, '');
-
+        displayText = displayText.replace(/\s+([.,;!?])/g, '$1').replace(/\s+/g, ' ').trim().replace(/^[.,;!?\-\—\s]+|[.,;!?\-\—\s]+$/g, '');
         if (!displayText || displayText.length < 2) return;
 
         if (type !== 'citation' && displayText.length > 4 && displayText === displayText.toUpperCase()) {
@@ -144,11 +121,20 @@ export function TableOfContents() {
         }
 
         elements.push({ id, text: displayText, level, type });
-        validNodes.push(elem);
       }
     });
 
     setHeadings(elements);
+    
+    // Nudge the scroll system to sync initially
+    setTimeout(() => {
+      window.dispatchEvent(new Event('scroll'));
+    }, 1000);
+  }, [pathname]);
+
+  // Effect for Active State and Center-Scrolling
+  useEffect(() => {
+    if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -158,16 +144,16 @@ export function TableOfContents() {
           }
         });
       },
-      { 
-        rootMargin: '-10% 0% -70% 0%', 
-        threshold: 0 
-      }
+      { rootMargin: '0% 0% -50% 0%', threshold: 0 }
     );
 
-    validNodes.forEach((elem) => observer.observe(elem));
+    headings.forEach((heading) => {
+      const elem = document.getElementById(heading.id);
+      if (elem) observer.observe(elem);
+    });
 
     const handleScroll = () => {
-      if (window.scrollY < 100 && headings.length > 0) {
+      if (window.scrollY < 100) {
         setActiveId(headings[0].id);
       }
     };
@@ -177,12 +163,51 @@ export function TableOfContents() {
       observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [pathname]);
+  }, [headings]);
+
+  // Effect to AUTO-CENTER active item in sidebar
+  useEffect(() => {
+    if (!activeId || !navRef.current) return;
+
+    const nav = navRef.current;
+    const activeElem = nav.querySelector(`a[href="#${activeId}"]`) as HTMLElement;
+    
+    if (activeElem) {
+      // Find the actual scrollable container (.toc in desktop, .mobile-toc in mobile)
+      let container: HTMLElement | null = nav.parentElement;
+      while (container && !container.classList.contains('toc') && !container.classList.contains('mobile-toc')) {
+        container = container.parentElement;
+      }
+      
+      if (!container) return;
+
+      // Calculate position relative to the scrollable container
+      let targetTop = activeElem.offsetTop;
+      let parent = activeElem.offsetParent as HTMLElement;
+      
+      // Traverse up to the scrollable container to get the absolute offsetTop
+      while (parent && parent !== container && container.contains(parent)) {
+        targetTop += parent.offsetTop;
+        parent = parent.offsetParent as HTMLElement;
+      }
+
+      const targetHeight = activeElem.offsetHeight;
+      const containerHeight = container.offsetHeight;
+
+      // Center the active element within the sidebar container
+      const scrollPos = targetTop - (containerHeight / 2) + (targetHeight / 2);
+      
+      container.scrollTo({
+        top: Math.max(0, scrollPos),
+        behavior: 'smooth'
+      });
+    }
+  }, [activeId, headings]); // Depend on headings too to ensure first run works
 
   if (headings.length === 0) return null;
 
   return (
-    <nav className="toc-nav relative pl-4">
+    <nav ref={navRef} className="toc-nav relative pl-4 custom-scrollbar">
       {/* Vertical Track Line */}
       <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-neutral-200 dark:bg-neutral-800" />
 
