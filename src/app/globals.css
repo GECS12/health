@@ -1369,7 +1369,7 @@ a {
   border-radius: 4px;
   transition: all var(--transition-normal);
   background: var(--bg-color); /* Card style */
-  box-shadow: var(--shadow-small); /* Subtle shadow */
+  box-shadow: var(--shadow-soft); /* Subtle shadow */
 }
 
 .footer-nav-item:hover {

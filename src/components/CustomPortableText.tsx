@@ -35,19 +35,50 @@ const Citation = ({ children }: { children: any }) => {
   })
 }
 
-const CitationsWrapper = ({ children }: { children: any }) => {
-  if (Array.isArray(children)) {
-    return children.map((child, i) => {
-      if (typeof child === 'string') {
-        return <Citation key={i}>{child}</Citation>
-      }
-      return child
-    })
-  }
-  if (typeof children === 'string') {
-    return <Citation>{children}</Citation>
+const getLeafText = (node: any): string => {
+  if (typeof node === 'string') return node
+  if (Array.isArray(node)) return node.map(getLeafText).join('')
+  if (node?.props?.children) return getLeafText(node.props.children)
+  return ''
+}
+
+const ReferenceItem = ({ children }: { children: any }) => {
+  const text = getLeafText(children)
+  const refMatch = text.match(/^(\d+)\s*[–\-\—\.\)]\s+/)
+  
+  if (refMatch) {
+    const refNumber = refMatch[1]
+    return (
+      <span 
+        id={`ref-${refNumber}`} 
+        className="reference-target"
+        style={{ 
+          scrollMarginTop: '100px',
+          display: 'inline-block',
+          width: '100%'
+        }}
+      >
+        {children}
+      </span>
+    )
   }
   return children
+}
+
+const CitationsWrapper = ({ children }: { children: any }) => {
+  const processChild = (child: any, i: number) => {
+    if (typeof child === 'string') {
+      return <ReferenceItem key={i}><Citation>{child}</Citation></ReferenceItem>
+    }
+    // If it's a React element (like <em>), wrap it in ReferenceItem
+    return <ReferenceItem key={i}>{child}</ReferenceItem>
+  }
+
+  if (Array.isArray(children)) {
+    return children.map(processChild)
+  }
+  
+  return processChild(children, 0)
 }
 
 const components: PortableTextComponents = {
@@ -170,14 +201,11 @@ const components: PortableTextComponents = {
       
       if (isMetadata || isUrlOnly) return null
       
-      // Detect reference lines: "1 – Text" or "1. Text" or "1) Text"
-      // Covers: hyphen, en-dash, em-dash, dot, parenthesis
-      const refMatch = text.match(/^(\d+)\s*[–\-\—\.\)]\s+/)
+      // Detect if this block looks like it contains references
+      const isReference = text.match(/^\d+\s*[–\-\—\.\)]\s+/)
       
-      if (refMatch) {
-        const refNumber = refMatch[1]
-        // Add scroll-margin-top for sticky headers/padding
-        return <p id={`ref-${refNumber}`} className="reference-item" style={{ scrollMarginTop: '100px' }}><CitationsWrapper>{children}</CitationsWrapper></p>
+      if (isReference) {
+        return <p className="reference-item"><CitationsWrapper>{children}</CitationsWrapper></p>
       }
       
       return <p><CitationsWrapper>{children}</CitationsWrapper></p>
