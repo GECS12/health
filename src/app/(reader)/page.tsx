@@ -43,7 +43,7 @@ export default async function Home() {
           <div className="landing-parts">
             {tree.map((part, index) => (
               <div key={part._id} className="landing-part-card">
-                <div className="landing-part-number">Parte {index + 1}</div>
+
                 <h3 className="landing-part-title">{part.title}</h3>
                 
                 {part.posts.length > 0 && (

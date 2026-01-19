@@ -20,7 +20,7 @@ const Citation = ({ children }: { children: any }) => {
       return (
         <span key={i} className="citation-wrapper">
           {nums.map((num, j) => (
-            <span key={j}>
+            <span key={j} id={`cite-ref-${num}`} style={{ scrollMarginTop: '100px' }}>
               {j > 0 && ','}
               <a href={`#ref-${num}`} className="citation-link">
                 {num}
@@ -225,13 +225,15 @@ const components: PortableTextComponents = {
     referenceLink: ({ children, value }) => (
       <a 
         href={`#ref-${value?.refNumber}`} 
+        id={`cite-ref-${value?.refNumber}`}
         className="reference-link-inline"
         style={{ 
           fontSize: '0.75em', 
           verticalAlign: 'super', 
           color: '#3b82f6', 
           textDecoration: 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          scrollMarginTop: '100px'
         }}
       >
         {children}

@@ -62,6 +62,22 @@ export function Bibliography({ citations }: BibliographyProps) {
                   .
                 </>
               )}
+              
+              {/* Back to reading position link */}
+              <a 
+                href={`#cite-ref-${index + 1}`} 
+                aria-label="Voltar para a citação no texto"
+                className="bibliography-back-link"
+                style={{ 
+                  color: 'var(--accent-color)', 
+                  marginLeft: '8px', 
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  display: 'inline-block'
+                }}
+              >
+                ↩
+              </a>
               {citation.doi && (
                 <div className="bibliography-doi">
                   DOI: <a href={`https://doi.org/${citation.doi}`} target="_blank" rel="noopener noreferrer">
