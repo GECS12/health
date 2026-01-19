@@ -49,14 +49,10 @@ const ReferenceItem = ({ children }: { children: any }) => {
   if (refMatch) {
     const refNumber = refMatch[1]
     return (
-      <span 
+      <div 
         id={`ref-${refNumber}`} 
-        className="reference-target"
-        style={{ 
-          scrollMarginTop: '100px',
-          display: 'inline-block',
-          width: '100%'
-        }}
+        className="reference-item"
+        style={{ scrollMarginTop: '100px' }}
       >
         <a 
           href={`#cite-ref-${refNumber}`}
@@ -70,7 +66,7 @@ const ReferenceItem = ({ children }: { children: any }) => {
         >
           {children}
         </a>
-      </span>
+      </div>
     )
   }
   return children
@@ -79,19 +75,16 @@ const ReferenceItem = ({ children }: { children: any }) => {
 const CitationsWrapper = ({ children }: { children: any }) => {
   const processChild = (child: any, i: number) => {
     if (typeof child === 'string') {
-      // Split by newlines to handle multiple references in one block
       const lines = child.split('\n');
       if (lines.length > 1) {
         return lines.map((line, j) => (
           <ReferenceItem key={`${i}-${j}`}>
-            <Citation>{line}</Citation>
-            {j < lines.length - 1 && <br />}
+            {line}
           </ReferenceItem>
         ));
       }
-      return <ReferenceItem key={i}><Citation>{child}</Citation></ReferenceItem>
+      return <ReferenceItem key={i}>{child}</ReferenceItem>
     }
-    // If it's a React element (like <em>), wrap it in ReferenceItem
     return <ReferenceItem key={i}>{child}</ReferenceItem>
   }
 
@@ -99,7 +92,7 @@ const CitationsWrapper = ({ children }: { children: any }) => {
     return <>{children.map((child, i) => processChild(child, i))}</>
   }
   
-  return processChild(children, 0)
+  return <>{processChild(children, 0)}</>
 }
 
 const components: PortableTextComponents = {
@@ -226,7 +219,7 @@ const components: PortableTextComponents = {
       const isReference = text.match(/^\d+\s*[–\-\—\.\)]\s+/)
       
       if (isReference) {
-        return <p className="reference-item"><CitationsWrapper>{children}</CitationsWrapper></p>
+        return <div className="references-group"><CitationsWrapper>{children}</CitationsWrapper></div>
       }
       
       return <p><CitationsWrapper>{children}</CitationsWrapper></p>

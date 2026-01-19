@@ -82,11 +82,6 @@ export function MobileMenuWrapper({
           </>
         )}
       </AnimatePresence>
-
-      {/* Desktop TOC */}
-      <aside className="toc desktop-only">
-        {toc}
-      </aside>
     </div>
   );
 }

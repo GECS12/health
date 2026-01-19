@@ -22,10 +22,6 @@ export default function ReaderLayout({
   const sidebar = <Sidebar />;
   const toc = (
     <>
-      <div className="toc-top-actions">
-        <SearchTrigger />
-        <ThemeToggle className="theme-toggle-desktop" />
-      </div>
       <div className="toc-header-group-minimal">
         <div className="toc-sidebar-heading">
            <ArrowUpRight size={12} strokeWidth={3} />
