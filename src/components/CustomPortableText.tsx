@@ -79,6 +79,16 @@ const ReferenceItem = ({ children }: { children: any }) => {
 const CitationsWrapper = ({ children }: { children: any }) => {
   const processChild = (child: any, i: number) => {
     if (typeof child === 'string') {
+      // Split by newlines to handle multiple references in one block
+      const lines = child.split('\n');
+      if (lines.length > 1) {
+        return lines.map((line, j) => (
+          <ReferenceItem key={`${i}-${j}`}>
+            <Citation>{line}</Citation>
+            {j < lines.length - 1 && <br />}
+          </ReferenceItem>
+        ));
+      }
       return <ReferenceItem key={i}><Citation>{child}</Citation></ReferenceItem>
     }
     // If it's a React element (like <em>), wrap it in ReferenceItem
@@ -86,7 +96,7 @@ const CitationsWrapper = ({ children }: { children: any }) => {
   }
 
   if (Array.isArray(children)) {
-    return children.map(processChild)
+    return <>{children.map((child, i) => processChild(child, i))}</>
   }
   
   return processChild(children, 0)

@@ -10,7 +10,7 @@ interface TOCItem {
   id: string;
   text: string;
   level: number;
-  type: 'header' | 'quote';
+  type: 'header' | 'quote' | 'citation';
 }
 
 export function TableOfContents() {
@@ -24,100 +24,126 @@ export function TableOfContents() {
     const portableText = document.querySelector('.portable-text');
     if (!portableText) return;
 
-    // Get all potential candidates
-    const candidates = Array.from(portableText.querySelectorAll('h2, h3, blockquote, p'));
+    // Get all potential candidates including citation links
+    const candidates = Array.from(portableText.querySelectorAll('h2, h3, blockquote, p, a.citation-link, a.reference-link-inline'));
     
     const validNodes: Element[] = [];
     const elements: TOCItem[] = [];
 
     candidates.forEach((elem, index) => {
       const tag = elem.tagName.toLowerCase();
-      let text = '';
-      let type: 'header' | 'quote' = 'header';
+      let rawText = '';
+      let type: 'header' | 'quote' | 'citation' = 'header';
       let level = 2;
+
+      // Helper to extract text with spaces to avoid "gordurasão"
+      const extractTextWithSpaces = (node: Node): string => {
+        let text = '';
+        node.childNodes.forEach(child => {
+          if (child.nodeType === Node.TEXT_NODE) {
+            text += child.textContent;
+          } else if (child.nodeType === Node.ELEMENT_NODE) {
+            const element = child as Element;
+            const isWordBreakTag = ['BR', 'P', 'DIV', 'SPAN', 'STRONG', 'B', 'EM', 'I'].includes(element.tagName);
+            text += (isWordBreakTag ? ' ' : '') + extractTextWithSpaces(element) + (isWordBreakTag ? ' ' : '');
+          }
+        });
+        return text;
+      };
 
       // Handle Headers
       if (tag === 'h2') {
-        text = elem.textContent || '';
+        rawText = extractTextWithSpaces(elem);
         level = 2;
       } else if (tag === 'h3') {
-        text = elem.textContent || '';
+        rawText = extractTextWithSpaces(elem);
         level = 3;
       } 
       // Handle Blockquotes
       else if (tag === 'blockquote') {
-        text = elem.textContent || '';
+        rawText = extractTextWithSpaces(elem);
         type = 'quote';
         level = 4;
       } 
       // Handle Paragraphs with Bold Start (Pseudo-headers)
       else if (tag === 'p') {
         const firstChild = elem.firstElementChild;
-        // Check if first child is STRONG or B
         if (firstChild && (firstChild.tagName === 'STRONG' || firstChild.tagName === 'B')) {
-           const boldText = (firstChild.textContent || '').trim();
-           
-           // Ensure the paragraph actually STARTS with this bold text 
-           // (prevents picking up bold text from middle of sentences)
-           const pText = (elem.textContent || '').trim();
-           
-           // HEURISTIC: An "index" entry (header) is usually short. 
-           // If the bold text is very long (e.g. > 80 chars), it is likely just an emphasized paragraph, not a header.
-           const isLikelyHeader = boldText.length > 2 && boldText.length < 80;
+            const boldText = extractTextWithSpaces(firstChild).trim();
+            const pText = extractTextWithSpaces(elem).trim();
+            const isLikelyHeader = boldText.length > 2 && boldText.length < 100;
 
-           if (isLikelyHeader && pText.startsWith(boldText)) {
-             text = boldText;
-             level = 4; // Treat as smallest header
-           }
+            if (isLikelyHeader && pText.startsWith(boldText)) {
+              rawText = boldText;
+              level = 4;
+            } else {
+              return;
+            }
+        } else {
+          return;
+        }
+      }
+      // Handle Citations
+      else if (tag === 'a' && (elem.classList.contains('citation-link') || elem.classList.contains('reference-link-inline'))) {
+        const refNum = elem.textContent?.trim() || '';
+        if (!refNum) return;
+
+        type = 'citation';
+        level = 5;
+        
+        const parent = elem.closest('p, blockquote, li');
+        if (parent) {
+          const parentText = extractTextWithSpaces(parent).replace(/\s+/g, ' ').trim();
+          const cleanText = parentText.replace(/\[\d+(?:[\s,\-]*\d+)*\]/g, '').trim();
+          rawText = `[${refNum}] ${cleanText}`;
+        } else {
+          rawText = `[${refNum}] Referência`;
         }
       }
 
-      // If we found valid text, process it
-      if (text.trim()) {
-        // Smart Truncation & Formatting
-        let displayText = text.trim();
-        
-        // 1. Clean up excessive whitespace
-        displayText = displayText.replace(/\s+/g, ' ');
+      if (rawText.trim()) {
+        let displayText = rawText.replace(/\s+/g, ' ').trim();
 
-        // 2. Truncate if too long (e.g., > 60 chars) - Redundant if we have the <80 check, but safe for H2/H3
-        if (displayText.length > 60) {
-          // Find the last space within the limit to avoid cutting words
-          const cutPoint = displayText.lastIndexOf(' ', 60);
-          if (cutPoint > 0) {
-            displayText = displayText.substring(0, cutPoint) + '...';
-          } else {
-            displayText = displayText.substring(0, 60) + '...';
-          }
+        if (type !== 'citation') {
+          displayText = displayText.replace(/\[\d+(?:[\s,\-]*\d+)*\]/g, ' ');
         }
         
-        // 3. Normalize casing: lowercased (unless proper noun likelihood low) with Capitalized first letter
-        // If it was ALL CAPS, fix it.
-        if (displayText.length > 4 && displayText === displayText.toUpperCase()) {
+        displayText = displayText.replace(/\s+([.,;!?])/g, '$1');
+        displayText = displayText.replace(/\s+/g, ' ').trim();
+        displayText = displayText.replace(/^[.,;!?\-\—\s]+|[.,;!?\-\—\s]+$/g, '');
+
+        if (!displayText || displayText.length < 2) return;
+
+        if (type !== 'citation' && displayText.length > 4 && displayText === displayText.toUpperCase()) {
             displayText = displayText.toLowerCase();
         }
-        // Always capitalize first letter
-        displayText = displayText.charAt(0).toUpperCase() + displayText.slice(1);
+        
+        const limit = type === 'citation' ? 70 : 80;
+        if (displayText.length > limit) {
+          const cutPoint = displayText.lastIndexOf(' ', limit);
+          displayText = (cutPoint > 0 ? displayText.substring(0, cutPoint) : displayText.substring(0, limit)) + '...';
+        }
+
+        if (type === 'citation') {
+           const match = displayText.match(/^(\[\d+\]\s*)(.*)/);
+           if (match) {
+             const bracket = match[1];
+             const rest = match[2];
+             displayText = bracket + rest.charAt(0).toUpperCase() + rest.slice(1);
+           }
+        } else {
+          displayText = displayText.charAt(0).toUpperCase() + displayText.slice(1);
+        }
 
         let id = elem.id;
         if (!id) {
-          id = text
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '')
-            .substring(0, 50);
-          
+          const suffix = type === 'citation' ? `-cite-${index}` : '';
+          id = rawText.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').substring(0, 50) + suffix;
           if (!id) id = `item-${index}`;
           elem.id = id;
         }
 
-        elements.push({
-          id,
-          text: displayText,
-          level,
-          type
-        });
-        
+        elements.push({ id, text: displayText, level, type });
         validNodes.push(elem);
       }
     });
@@ -160,23 +186,25 @@ export function TableOfContents() {
       {/* Vertical Track Line */}
       <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-neutral-200 dark:bg-neutral-800" />
 
-      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
         {headings.map((heading) => {
           const isActive = activeId === heading.id;
           const isQuote = heading.type === 'quote';
-          
-          return (
-            <a
-              key={heading.id}
-              href={`#${heading.id}`}
-              className={`group relative flex items-start gap-3 transition-colors ${
-                isActive 
-                  ? 'text-[var(--accent-color)] font-semibold' 
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-              style={{
-                paddingLeft: heading.level === 3 ? '16px' : heading.level === 4 ? '12px' : '0'
-              }}
+          const isCitation = heading.type === 'citation';
+            
+            return (
+              <a
+                key={heading.id}
+                href={`#${heading.id}`}
+                className={`group relative flex items-start gap-3 transition-colors ${
+                  isActive 
+                    ? 'text-[var(--accent-color)] font-semibold' 
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+                style={{
+                  paddingLeft: heading.level === 3 ? '16px' : heading.level === 4 ? '32px' : heading.level === 5 ? '48px' : '0',
+                  opacity: isCitation ? 0.75 : 1
+                }}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById(heading.id)?.scrollIntoView({
@@ -202,9 +230,16 @@ export function TableOfContents() {
                 )}
               </div>
 
-              <span className={`leading-tight ${isQuote ? 'font-serif italic text-xs opacity-85 mt-[-1px]' : 'text-sm'}`}>
-                {heading.text}
-              </span>
+                <span className={`leading-tight ${isQuote || isCitation ? 'font-serif italic text-xs mt-[-1px]' : 'text-sm'} ${isCitation ? 'opacity-90' : isQuote ? 'opacity-85' : ''}`}>
+                  {isCitation ? (
+                    <>
+                      <span className="font-sans font-bold text-[var(--accent-color)] opacity-100 mr-1">
+                        {heading.text.match(/^\[\d+\]/)?.[0]}
+                      </span>
+                      {heading.text.replace(/^\[\d+\]\s*/, '')}
+                    </>
+                  ) : heading.text}
+                </span>
             </a>
           );
         })}
