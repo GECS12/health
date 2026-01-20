@@ -65,9 +65,9 @@ export function Header() {
         </div>
         
         {/* Secondary Desktop Link */}
-        <Link href="/admin" className="editor-link desktop-only">
+        {/* <Link href="/admin" className="editor-link desktop-only">
           Editor
-        </Link>
+        </Link> */}
       </div>
     </header>
   )

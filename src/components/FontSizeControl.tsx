@@ -1,11 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Minus, Plus, Type, PanelLeft } from 'lucide-react';
+import { Minus, Plus, Type, PanelLeft, Minimize2, Maximize2 } from 'lucide-react';
 
 interface FontSizeState {
   sidebarScale: number;
   bodyScale: number;
+}
+
+interface FontSizeControlProps {
+  onToggle?: () => void;
+  isExpanded?: boolean;
 }
 
 const DEFAULT_STATE: FontSizeState = {
@@ -17,7 +22,7 @@ const MIN_SCALE = 0.8;
 const MAX_SCALE = 1.4;
 const STEP = 0.05;
 
-export function FontSizeControl() {
+export function FontSizeControl({ onToggle, isExpanded }: FontSizeControlProps) {
   const [state, setState] = useState<FontSizeState>(DEFAULT_STATE);
   const [mounted, setMounted] = useState(false);
 
@@ -99,6 +104,20 @@ export function FontSizeControl() {
           <Plus size={12} />
         </button>
       </div>
+
+      {/* Sidebar Toggle - Only if onToggle provided */}
+      {onToggle && (
+        <>
+          <div className="control-divider" />
+          <button 
+            onClick={onToggle}
+            className="font-btn"
+            title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
+          >
+            {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+          </button>
+        </>
+      )}
     </div>
   );
 }

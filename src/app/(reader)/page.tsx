@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <div className="landing-page relative overflow-hidden">
       <ScrollReveal>
-        <header className="landing-hero flex flex-col items-center justify-center text-center pt-24 pb-12 px-4 relative z-10">
+        <header className="landing-hero flex flex-col items-center justify-center text-center pt-24 pb-6 px-4 relative z-10">
           <h1 className="landing-title text-5xl md:text-7xl font-serif text-stone-900 mb-6 tracking-tight leading-none">
             Saúde, Medicina <br className="hidden md:block" /> e Ciência
           </h1>

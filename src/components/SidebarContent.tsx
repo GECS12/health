@@ -93,10 +93,7 @@ function SidebarControls({ tree }: { tree: Section[] }) {
 
   return (
     <div className="sidebar-controls-row">
-      <FontSizeControl />
-      <button onClick={handleToggle} className="sidebar-text-btn">
-        {isExpanded ? 'Collapse' : 'Expand'}
-      </button>
+      <FontSizeControl onToggle={handleToggle} isExpanded={isExpanded} />
     </div>
   );
 }
@@ -126,7 +123,7 @@ function SidebarContentInner({ tree }: { tree: Section[] }) {
     <nav className="sidebar-nav">
       <div className="section-group">
         <Link href="/" className="home-link sidebar-branding">
-          <span className="section-title-text">HEALTH & NUTRITION</span>
+          <span className="section-title-text">SAÚDE E NUTRIÇÃO</span>
         </Link>
       </div>
 
