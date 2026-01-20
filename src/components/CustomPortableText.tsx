@@ -235,7 +235,6 @@ const getComponents = (documentId?: string, isDraftMode?: boolean): PortableText
       
       return (
         <figure className="my-10 text-center relative group">
-          {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} isDraftMode={isDraftMode} /></div>}
           <Image
             src={imageUrl}
             alt={value.alt || 'article image'}

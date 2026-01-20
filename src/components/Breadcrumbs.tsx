@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ChevronRight, Home } from 'lucide-react';
+import { EditButton } from './EditButton';
 
 interface BreadcrumbsProps {
   part?: string;
@@ -9,14 +10,16 @@ interface BreadcrumbsProps {
   chapter?: string;
   chapterHref?: string;
   article: string;
+  documentId?: string;
+  isDraftMode?: boolean;
 }
 
-export function Breadcrumbs({ part, partHref, chapter, chapterHref, article }: BreadcrumbsProps) {
+export function Breadcrumbs({ part, partHref, chapter, chapterHref, article, documentId, isDraftMode }: BreadcrumbsProps) {
   return (
     <nav className="breadcrumbs" aria-label="Breadcrumb">
-      <Link href="/" className="breadcrumb-item breadcrumb-link">
-        <Home size={14} />
-      </Link>
+      {documentId && (
+        <EditButton documentId={documentId} isDraftMode={isDraftMode} variant="breadcrumb" />
+      )}
       
       {part && (
         <>

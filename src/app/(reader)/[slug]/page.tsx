@@ -93,13 +93,14 @@ export default async function ArticlePage({ params }: ArticleProps) {
     <PageTransition>
       <article className="article-container">
         <header className="article-header relative group">
-           <EditButton documentId={article._id} />
-           <h1 className="article-title">{article.title}</h1>
-           <Breadcrumbs 
-             part={article.section?.parent?.title} 
-             chapter={article.section?.title} 
-             article={article.title} 
-           />
+            <h1 className="article-title">{article.title}</h1>
+            <Breadcrumbs 
+              part={article.section?.parent?.title} 
+              chapter={article.section?.title} 
+              article={article.title} 
+              documentId={article._id}
+              isDraftMode={isEnabled}
+            />
            <div className="article-header-divider" />
         </header>
 
