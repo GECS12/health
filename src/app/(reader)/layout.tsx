@@ -13,7 +13,6 @@ import { MobileMenuWrapper } from '@/components/MobileMenuWrapper'
 import '../globals.css'
 
 import { ThemeToggle } from '../../components/ThemeToggle'
-import { ThemeDrape } from '../../components/ThemeDrape'
 
 export default function ReaderLayout({
   children,
@@ -47,7 +46,6 @@ export default function ReaderLayout({
         {children}
       </MobileMenuWrapper>
       <BackToTop />
-      <ThemeDrape />
     </MobileMenuProvider>
   )
 }
