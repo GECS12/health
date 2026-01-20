@@ -33,17 +33,18 @@ export default async function ArticlePage({ params }: ArticleProps) {
   const { slug } = await params
   const { isEnabled } = await draftMode()
 
-  const token = process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_READ_TOKEN
-  
-  // In draft mode, we need a token - if not available, fall back to normal client
-  const fetchClient = isEnabled && token
+  const fetchClient = isEnabled 
     ? client.withConfig({ 
-        token, 
+        token: process.env.SANITY_API_READ_TOKEN || process.env.SANITY_API_WRITE_TOKEN, 
         perspective: 'previewDrafts', 
         useCdn: false,
         stega: { 
           enabled: true, 
           studioUrl: '/admin',
+          filter: (props) => {
+            if (props.sourcePath.at(-1) === 'slug') return false
+            return props.filterDefault(props)
+          }
         } 
       })
     : client
@@ -82,12 +83,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
   }
 
   // Get global article order for cross-chapter navigation
-  let allArticles: any[] = []
-  try {
-    allArticles = await getFlattenedArticles()
-  } catch (error) {
-    console.error('Failed to fetch article navigation:', error)
-  }
+  const allArticles = await getFlattenedArticles()
   const currentIndex = allArticles.findIndex(a => a.slug === slug)
   const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null
   const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null

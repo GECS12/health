@@ -1,15 +1,9 @@
-import { getNavigationTree, Section } from '@/lib/navigation'
+import { getNavigationTree } from '@/lib/navigation'
 import { SidebarContent } from './SidebarContent'
 import { SearchTrigger } from './SearchModal'
 
 export async function Sidebar() {
-  let tree: Section[] = []
-  try {
-    tree = await getNavigationTree()
-  } catch (error) {
-    console.error('Failed to fetch navigation tree:', error)
-    // Return empty tree on error to prevent page crash
-  }
+  const tree = await getNavigationTree()
 
   return (
     <div className="sidebar-container">
