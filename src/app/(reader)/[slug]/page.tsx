@@ -82,7 +82,12 @@ export default async function ArticlePage({ params }: ArticleProps) {
   }
 
   // Get global article order for cross-chapter navigation
-  const allArticles = await getFlattenedArticles()
+  let allArticles: any[] = []
+  try {
+    allArticles = await getFlattenedArticles()
+  } catch (error) {
+    console.error('Failed to fetch article navigation:', error)
+  }
   const currentIndex = allArticles.findIndex(a => a.slug === slug)
   const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null
   const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null
