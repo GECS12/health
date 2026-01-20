@@ -108,10 +108,10 @@
   display: block;
   padding: 24px 20px 20px 20px !important;
   font-family: var(--font-serif);
-  font-size: 20px !important;
+  font-size: 24px !important;
   font-weight: 900 !important;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   color: var(--text-primary) !important;
   border-bottom: 2px solid var(--accent-light);
   margin-bottom: 24px !important;
@@ -119,6 +119,8 @@
   transition: all 0.2s;
   line-height: 1.1;
   background-color: transparent !important; /* Ensure no background */
+  text-align: center;
+  margin-left: -2px;
 }
 
 /* ... existing code ... */
@@ -329,6 +331,7 @@ a {
   text-decoration: none;
   transition: all 0.2s;
   line-height: 1.1;
+  text-align: center;
 }
 
 .sidebar-branding:hover {
