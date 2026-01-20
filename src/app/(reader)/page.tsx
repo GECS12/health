@@ -24,7 +24,7 @@ export default async function Home() {
           </p>
           
           {firstArticle && (
-            <Link href={`/${firstArticle.slug}`} className="landing-cta group relative inline-flex items-center gap-3 px-8 py-4 bg-stone-900 text-stone-50 rounded-full hover:bg-stone-800 transition-all duration-300 hover:shadow-lg">
+            <Link href={`/${firstArticle.slug}`} className="landing-cta group relative inline-flex items-center gap-3 px-8 py-4 rounded-full transition-all duration-300 hover:shadow-lg">
               <span className="font-medium tracking-widest text-sm uppercase">Começar a Ler</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>

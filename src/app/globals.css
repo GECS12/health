@@ -88,14 +88,46 @@
   --bg-color: #0E0E0E; /* Pure deep background */
   --sidebar-bg: #141414;
   --toc-bg: var(--bg-color);
-  --text-primary: #F0F0F0; /* High contrast white */
-  --text-secondary: #BDBDBD; /* Brightened from #A0A0A0 */
-  --text-muted: #888888; /* Brightened from #666666 */
-  --border-color: #2D2D2D; /* slightly more visible */
-  --accent-color: #D1D9E0; /* Brightened accent */
-  --accent-light: #707F8E;
-  --active-bg: rgba(255, 255, 255, 0.08); /* More distinct active state */
-  --hover-bg: rgba(255, 255, 255, 0.04);
+  --text-primary: #EDEDED; /* Softened white */
+  --text-secondary: #A0A0A0; /* Balanced secondary */
+  --text-muted: #666666;
+  --border-color: #262626; /* Darker, more subtle borders */
+  --accent-color: #D1D9E0;
+  --accent-light: #5A6B7C;
+  --active-bg: rgba(255, 255, 255, 0.03); /* Much more subtle active state */
+  --hover-bg: rgba(255, 255, 255, 0.02);
+}
+
+/* ... existing code ... */
+
+.sidebar-branding {
+  display: block;
+  padding: 24px 20px 20px 20px !important;
+  font-family: var(--font-serif);
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--accent-light);
+  margin-bottom: 24px !important;
+  text-decoration: none;
+  transition: all 0.2s;
+  line-height: 1.1;
+  background-color: transparent !important; /* Ensure no background */
+}
+
+/* ... existing code ... */
+
+.landing-hero {
+  text-align: center;
+  margin-bottom: 120px;
+  padding: 80px 20px;
+  background: radial-gradient(circle at center, var(--active-bg) 0%, transparent 60%); /* Reduced spread */
+}
+
+[data-theme='dark'] .landing-hero {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 0%, transparent 50%); /* Extremely subtle in dark mode */
 }
 
 * {
@@ -336,6 +368,10 @@ a {
   margin-top: 12px; /* Reduced from 16px */
 }
 
+[data-theme='dark'] .section-label.depth-0 {
+  color: #F0F0F0;
+}
+
 .section-group:first-child .section-label.depth-0 {
   margin-top: 0;
 }
@@ -357,6 +393,10 @@ a {
   text-align: left;
   font-weight: 600;
   margin-top: 1px; /* Reduced from 2px */
+}
+
+[data-theme='dark'] .section-label.depth-1 {
+  color: #E0E0E0;
 }
 
 .section-label.depth-1:hover {
@@ -403,6 +443,12 @@ a {
   font-weight: 500;
 }
 
+[data-theme='dark'] .section-label.depth-2,
+[data-theme='dark'] .section-label.depth-3,
+[data-theme='dark'] .section-label.depth-4 {
+  color: #D0D0D0;
+}
+
 /* Sub-links (Articles) */
 .sub-links {
   display: flex;
@@ -410,6 +456,10 @@ a {
   padding: 0;
   margin-left: 23px; /* Align with parent indent */
   border-left: 1px solid #EAEAEA; /* Thin flowy line */
+}
+
+[data-theme='dark'] .sub-links {
+  border-left-color: #333;
 }
 
 .sub-link {
@@ -427,6 +477,10 @@ a {
   border-left: 3px solid transparent;
   margin-left: -1px;
   border-radius: 0 6px 6px 0;
+}
+
+[data-theme='dark'] .sub-link {
+  color: #BBBBBB;
 }
 
 /* Indent deeper levels - handled by recursion now */
@@ -2151,6 +2205,8 @@ a {
   gap: 32px;
 }
 
+/* ... */
+
 .landing-index-item {
   position: relative;
   padding: 64px 0;
@@ -2167,6 +2223,41 @@ a {
   padding-left: 32px;
   padding-right: 32px;
 }
+
+/* Ensure text logo has no background */
+.section-title-text {
+  background-color: transparent !important;
+}
+
+.landing-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: var(--accent-color);
+  color: white; /* Default for light mode where accent is dark */
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-medium);
+}
+
+[data-theme='dark'] .landing-cta {
+  color: var(--bg-color); /* Dark text on light accent background for contrast */
+}
+
+.landing-cta:hover {
+  background: var(--accent-warm);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+[data-theme='dark'] .landing-cta:hover {
+  background: white; /* Brighter on hover in dark mode */
+}
+
 
 .landing-part-header {
   margin-bottom: 24px;
