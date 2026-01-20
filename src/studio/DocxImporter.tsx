@@ -41,10 +41,25 @@ export function DocxImporter(props: any) {
             filename: `imported-image-${Date.now()}.${image.contentType.split('/')[1]}`
           })
           
-          return {
+          // Extract image dimensions if available
+          // Mammoth provides dimensions in EMUs (English Metric Units)
+          // 1 EMU = 1/914400 inches, we convert to pixels assuming 96 DPI
+          const attrs: any = {
             src: asset.url,
             'data-asset-id': asset._id
           }
+          
+          // Check if image has width/height in EMUs and convert to pixels
+          if (image.width && image.height) {
+            // Convert EMUs to pixels (914400 EMUs per inch, 96 pixels per inch)
+            const widthPx = Math.round((image.width / 914400) * 96)
+            const heightPx = Math.round((image.height / 914400) * 96)
+            
+            attrs['data-width'] = widthPx.toString()
+            attrs['data-height'] = heightPx.toString()
+          }
+          
+          return attrs
         })
       }
 
@@ -105,13 +120,24 @@ export function DocxImporter(props: any) {
               if (el instanceof HTMLElement && el.tagName.toLowerCase() === 'img') {
                 const assetId = el.getAttribute('data-asset-id')
                 if (assetId) {
-                  return block({
+                  const imageBlock: any = {
                     _type: 'image',
                     asset: {
                       _type: 'reference',
                       _ref: assetId
                     }
-                  })
+                  }
+                  
+                  // Preserve image dimensions if available
+                  const width = el.getAttribute('data-width')
+                  const height = el.getAttribute('data-height')
+                  
+                  if (width && height) {
+                    imageBlock.width = parseInt(width, 10)
+                    imageBlock.height = parseInt(height, 10)
+                  }
+                  
+                  return block(imageBlock)
                 }
               }
               // Handle superscript elements (for citations)

@@ -3,6 +3,7 @@ import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '../lib/sanity'
 import Image from 'next/image'
 import { EditButton } from './EditButton'
+import { ImageResizer } from './ImageResizer'
 
 const Citation = ({ children }: { children: any }) => {
   const text = Array.isArray(children) ? children[0] : children
@@ -235,21 +236,46 @@ const getComponents = (documentId?: string): PortableTextComponents => ({
       
       return (
         <figure className="my-10 text-center relative group">
-          {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} /></div>}
-          <Image
-            src={imageUrl}
-            alt={value.alt || 'article image'}
-            width={width}
-            height={height}
-            className="rounded-lg shadow-sm mx-auto"
-            style={{ 
-              maxWidth: maxWidth,
-              width: isFullWidth ? '100%' : 'auto', 
-              height: 'auto'
-            }}
-            loading={isInline ? 'lazy' : 'eager'}
-            priority={!isInline}
-          />
+          {documentId && value._key ? (
+            <ImageResizer 
+              documentId={documentId} 
+              blockKey={value._key} 
+              initialWidth={maxWidth}
+            >
+              {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} /></div>}
+              <Image
+                src={imageUrl}
+                alt={value.alt || 'article image'}
+                width={width}
+                height={height}
+                className="rounded-lg shadow-sm mx-auto"
+                style={{ 
+                  width: '100%', 
+                  height: 'auto'
+                }}
+                loading={isInline ? 'lazy' : 'eager'}
+                priority={!isInline}
+              />
+            </ImageResizer>
+          ) : (
+            <>
+              {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} /></div>}
+              <Image
+                src={imageUrl}
+                alt={value.alt || 'article image'}
+                width={width}
+                height={height}
+                className="rounded-lg shadow-sm mx-auto"
+                style={{ 
+                  maxWidth: maxWidth,
+                  width: isFullWidth ? '100%' : 'auto', 
+                  height: 'auto'
+                }}
+                loading={isInline ? 'lazy' : 'eager'}
+                priority={!isInline}
+              />
+            </>
+          )}
           {value.caption && (
             <figcaption className="mt-4 text-sm text-gray-500 italic">
               {value.caption}
