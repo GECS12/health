@@ -1132,7 +1132,7 @@ a {
   border-radius: 14px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-medium);
-  width: 450px; /* "increase width a lot" */
+  width: 675px; /* Increased to 1.5x of 450px as requested */
 }
 
 /* Dark mode specific pill override */
