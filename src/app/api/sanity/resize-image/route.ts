@@ -23,27 +23,26 @@ export async function POST(req: Request) {
 
     const authHeader = req.headers.get('x-admin-key');
     const adminKey = process.env.ADMIN_ACCESS_KEY;
-    const isDraft = (await draftMode()).isEnabled;
     
-    // Allow if:
-    // 1. Admin Key matches (if set)
-    // 2. Draft Mode is enabled
+    let isDraft = false;
+    try {
+      isDraft = (await draftMode()).isEnabled;
+    } catch {
+      // Ignore draft errors
+    }
     
     const isKeyValid = adminKey && authHeader === adminKey;
     
     if (!isKeyValid && !isDraft) {
-      return NextResponse.json(
-        { message: "Unauthorized: Invalid Key or not in Draft Mode" },
-        { status: 401 }
-      );
+      if (!adminKey) {
+        return NextResponse.json({ message: "ADMIN_ACCESS_KEY not set in Netlify" }, { status: 500 });
+      }
+      return NextResponse.json({ message: "Key Mismatch" }, { status: 401 });
     }
 
-    if (!documentId || !blockKey || width === undefined) {
-      return NextResponse.json(
-        { message: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+    if (!documentId) return NextResponse.json({ message: "Missing documentId" }, { status: 400 });
+    if (!blockKey) return NextResponse.json({ message: "Missing blockKey" }, { status: 400 });
+    if (width === undefined) return NextResponse.json({ message: "Missing width" }, { status: 400 });
 
     // Update the specific block within the body array
     // We target the block where _key matches the provided blockKey

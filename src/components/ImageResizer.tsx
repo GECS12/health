@@ -88,12 +88,20 @@ function ImageResizerContent({ documentId, blockKey, initialWidth, isDraftMode, 
           }),
         });
 
+        let data;
+        try {
+          data = await response.json();
+        } catch (e) {
+          data = { message: `Server error (${response.status})` };
+        }
+
         if (response.ok) {
           setIsSaved(true);
           setTimeout(() => setIsSaved(false), 2000);
-          router.refresh(); // Refresh to ensure server state is synced if needed
+          router.refresh(); 
         } else {
-          console.error('Failed to update image width');
+          console.error('Resize failed:', response.status, data.message);
+          alert(`Resize failed: ${data.message}`);
         }
       } catch (error) {
         console.error('Error updating image width:', error);
