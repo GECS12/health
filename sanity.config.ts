@@ -1,5 +1,6 @@
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
+import {presentationTool} from 'sanity/presentation'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 
@@ -71,6 +72,14 @@ export default defineConfig({
               (listItem) => !['post', 'section'].includes(listItem.getId() || '')
             ),
           ])
+    }),
+    presentationTool({
+      previewUrl: {
+        draftMode: {
+          enable: '/api/draft',
+          disable: '/api/disable-draft',
+        },
+      },
     }),
     visionTool()
   ],

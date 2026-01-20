@@ -824,7 +824,7 @@ a {
 
 .portable-text h1 {
   font-family: var(--font-serif);
-  font-size: 28px;
+  font-size: calc(28px * var(--body-font-scale));
   color: var(--text-primary);
   margin: 56px 0 28px;
   font-weight: 500;
@@ -854,7 +854,7 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 48px 0;
+  margin: calc(48px * var(--body-font-scale)) 0;
   text-align: center;
 }
 
@@ -865,9 +865,17 @@ a {
   border-radius: 4px;
 }
 
+.portable-text figcaption {
+  font-family: var(--font-serif);
+  font-size: calc(14px * var(--body-font-scale));
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: calc(16px * var(--body-font-scale));
+}
+
 .portable-text h2 {
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: calc(22px * var(--body-font-scale));
   color: var(--text-primary);
   margin: 56px 0 24px;
   font-weight: 500;
@@ -876,7 +884,7 @@ a {
 }
 
 .portable-text h3 {
-  font-size: 18px;
+  font-size: calc(18px * var(--body-font-scale));
   color: var(--text-primary);
   margin-top: 40px;
   margin-bottom: 16px;
@@ -886,7 +894,7 @@ a {
 
 .portable-text blockquote {
   font-family: inherit;
-  font-size: 16px;
+  font-size: calc(16px * var(--body-font-scale));
   font-style: italic;
   color: var(--text-secondary);
   padding: 28px 36px;
@@ -1409,7 +1417,7 @@ a {
   scroll-margin-top: 100px;
   clear: both;
   font-family: var(--font-serif);
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--body-font-scale));
   line-height: 1.35;
   color: var(--text-secondary);
   transition: background-color 0.2s ease;

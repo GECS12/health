@@ -15,8 +15,10 @@ export const metadata: Metadata = {
 };
 
 import { MobileMenuProvider } from '@/context/MobileMenuContext';
+import { VisualEditing } from 'next-sanity/visual-editing';
+import { draftMode } from 'next/headers';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -27,6 +29,9 @@ export default function RootLayout({
         <ThemeProvider>
           <MobileMenuProvider>
             {children}
+            {(await draftMode()).isEnabled && (
+              <VisualEditing />
+            )}
           </MobileMenuProvider>
         </ThemeProvider>
       </body>

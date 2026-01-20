@@ -10,8 +10,9 @@ import { ScrollReveal } from '@/components/ScrollReveal'
 import { Comments } from '@/components/Comments'
 import { Bibliography } from '@/components/Bibliography'
 import { EditButton } from '@/components/EditButton'
-import { MarkAsRead } from '@/components/MarkAsRead'
+
 import { PreFetchNavigation } from '@/components/PreFetchNavigation'
+import { draftMode } from 'next/headers'
 
 
 interface ArticleProps {
@@ -31,9 +32,26 @@ export async function generateStaticParams() {
 
 export default async function ArticlePage({ params }: ArticleProps) {
   const { slug } = await params
+  const { isEnabled } = await draftMode()
+
+  const fetchClient = isEnabled 
+    ? client.withConfig({ 
+        token: process.env.SANITY_API_READ_TOKEN, 
+        perspective: 'previewDrafts', 
+        useCdn: false,
+        stega: { 
+          enabled: true, 
+          studioUrl: '/admin',
+          filter: (props) => {
+            if (props.sourcePath.at(-1) === 'slug') return false
+            return props.filterDefault(props)
+          }
+        } 
+      })
+    : client
 
   // Fetch current article with citations
-  const article = await client.fetch(`
+  const article = await fetchClient.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
       title,
@@ -98,7 +116,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
         />
         <div className="article-body-wrapper">
           <ScrollReveal>
-            <CustomPortableText value={article.body} />
+            <CustomPortableText value={article.body} documentId={article._id} />
           </ScrollReveal>
         </div>
 

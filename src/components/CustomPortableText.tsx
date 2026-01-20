@@ -2,6 +2,7 @@ import React from 'react'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '../lib/sanity'
 import Image from 'next/image'
+import { EditButton } from './EditButton'
 
 const Citation = ({ children }: { children: any }) => {
   const text = Array.isArray(children) ? children[0] : children
@@ -193,7 +194,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
 }
 
 
-const components: PortableTextComponents = {
+const getComponents = (documentId?: string): PortableTextComponents => ({
   types: {
     image: ({ value, isInline }) => {
       if (!value?.asset?._ref && !value?.asset?._id) {
@@ -212,8 +213,29 @@ const components: PortableTextComponents = {
       const width = dimensionsMatch ? parseInt(dimensionsMatch[1]) : 1200
       const height = dimensionsMatch ? parseInt(dimensionsMatch[2]) : 800
       
+      let maxWidth = '100%';
+      let isFullWidth = false;
+      
+      if (value.imageWidth) {
+        maxWidth = `${value.imageWidth}%`;
+      } else if (typeof value.size === 'number') {
+        maxWidth = `${value.size}%`;
+      } else {
+        const size = value.size || 'large';
+        if (size === 'full') isFullWidth = true;
+        
+        const sizeMap: Record<string, string> = {
+          small: '50%',
+          medium: '75%',
+          large: '100%',
+          full: '100%'
+        };
+        maxWidth = sizeMap[size] || '100%';
+      }
+      
       return (
-        <figure className="my-10 text-center">
+        <figure className="my-10 text-center relative group">
+          {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} /></div>}
           <Image
             src={imageUrl}
             alt={value.alt || 'article image'}
@@ -221,7 +243,8 @@ const components: PortableTextComponents = {
             height={height}
             className="rounded-lg shadow-sm mx-auto"
             style={{ 
-              maxWidth: '100%', 
+              maxWidth: maxWidth,
+              width: isFullWidth ? '100%' : 'auto', 
               height: 'auto'
             }}
             loading={isInline ? 'lazy' : 'eager'}
@@ -391,9 +414,10 @@ const components: PortableTextComponents = {
       </a>
     ),
   },
-}
+})
 
-export function CustomPortableText({ value }: { value: any }) {
+export function CustomPortableText({ value, documentId }: { value: any, documentId?: string }) {
+  const components = getComponents(documentId)
   return (
     <div className="portable-text">
       <PortableText value={value} components={components} />

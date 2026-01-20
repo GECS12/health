@@ -160,6 +160,17 @@ export const postType = defineType({
               name: 'alt',
               type: 'string',
               title: 'Alt Text',
+            },
+            {
+              name: 'imageWidth',
+              type: 'number',
+              title: 'Image Width (%)',
+              description: 'Adjust the width of the image as a percentage of the content area.',
+              validation: (rule) => rule.min(10).max(100),
+              initialValue: 100,
+              options: {
+                range: {min: 10, max: 100, step: 5}
+              }
             }
           ]
         },
