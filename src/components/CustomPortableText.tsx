@@ -195,7 +195,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
 }
 
 
-const getComponents = (documentId?: string): PortableTextComponents => ({
+const getComponents = (documentId?: string, isDraftMode?: boolean): PortableTextComponents => ({
   types: {
     image: ({ value, isInline }) => {
       if (!value?.asset?._ref && !value?.asset?._id) {
@@ -241,8 +241,9 @@ const getComponents = (documentId?: string): PortableTextComponents => ({
               documentId={documentId} 
               blockKey={value._key} 
               initialWidth={maxWidth}
+              isDraftMode={isDraftMode}
             >
-              {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} /></div>}
+              {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} isDraftMode={isDraftMode} /></div>}
               <Image
                 src={imageUrl}
                 alt={value.alt || 'article image'}
@@ -259,7 +260,7 @@ const getComponents = (documentId?: string): PortableTextComponents => ({
             </ImageResizer>
           ) : (
             <>
-              {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} /></div>}
+              {documentId && <div className="absolute top-2 right-2 z-10"><EditButton documentId={documentId} isDraftMode={isDraftMode} /></div>}
               <Image
                 src={imageUrl}
                 alt={value.alt || 'article image'}
@@ -442,8 +443,8 @@ const getComponents = (documentId?: string): PortableTextComponents => ({
   },
 })
 
-export function CustomPortableText({ value, documentId }: { value: any, documentId?: string }) {
-  const components = getComponents(documentId)
+export function CustomPortableText({ value, documentId, isDraftMode }: { value: any, documentId?: string, isDraftMode?: boolean }) {
+  const components = getComponents(documentId, isDraftMode)
   return (
     <div className="portable-text">
       <PortableText value={value} components={components} />

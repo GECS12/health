@@ -1,5 +1,6 @@
 import { createClient } from "next-sanity";
 import { NextResponse } from "next/server";
+import { draftMode } from "next/headers";
 
 const client = createClient({
   projectId: 'd8l1kuhs',
@@ -17,6 +18,23 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { message: "Missing write token" },
         { status: 500 }
+      );
+    }
+
+    const authHeader = req.headers.get('x-admin-key');
+    const adminKey = process.env.ADMIN_ACCESS_KEY;
+    const isDraft = (await draftMode()).isEnabled;
+    
+    // Allow if:
+    // 1. Admin Key matches (if set)
+    // 2. Draft Mode is enabled
+    
+    const isKeyValid = adminKey && authHeader === adminKey;
+    
+    if (!isKeyValid && !isDraft) {
+      return NextResponse.json(
+        { message: "Unauthorized: Invalid Key or not in Draft Mode" },
+        { status: 401 }
       );
     }
 

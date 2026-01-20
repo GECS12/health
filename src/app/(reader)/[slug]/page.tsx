@@ -36,7 +36,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
 
   const fetchClient = isEnabled 
     ? client.withConfig({ 
-        token: process.env.SANITY_API_READ_TOKEN, 
+        token: process.env.SANITY_API_READ_TOKEN || process.env.SANITY_API_WRITE_TOKEN, 
         perspective: 'previewDrafts', 
         useCdn: false,
         stega: { 
@@ -116,7 +116,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
         />
         <div className="article-body-wrapper">
           <ScrollReveal>
-            <CustomPortableText value={article.body} documentId={article._id} />
+            <CustomPortableText value={article.body} documentId={article._id} isDraftMode={isEnabled} />
           </ScrollReveal>
         </div>
 

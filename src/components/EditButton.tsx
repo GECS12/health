@@ -7,18 +7,39 @@ import { Suspense, useEffect, useState } from 'react';
 
 interface EditButtonProps {
   documentId: string;
+  isDraftMode?: boolean;
 }
 
-function EditButtonContent({ documentId }: EditButtonProps) {
+function EditButtonContent({ documentId, isDraftMode }: EditButtonProps) {
   const searchParams = useSearchParams();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Show if ?admin=true is in URL OR if we are in development mode
-    if (searchParams.get('admin') === 'true' || process.env.NODE_ENV === 'development') {
+    // Check for admin params
+    const urlKey = searchParams.get('admin_key') || searchParams.get('admin_access_key');
+    const storedKey = localStorage.getItem('admin_access_key');
+
+    // Show if:
+    // 1. In Draft Mode
+    // 2. In Development
+    // 3. Has key in URL (and save it)
+    // 4. Has key in localStorage
+    
+    if (isDraftMode || process.env.NODE_ENV === 'development') {
+      setIsVisible(true);
+    } else if (urlKey) {
+      localStorage.setItem('admin_access_key', urlKey);
+      setIsVisible(true);
+      
+      // Clean URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('admin_key');
+      url.searchParams.delete('admin_access_key');
+      window.history.replaceState({}, '', url);
+    } else if (storedKey) {
       setIsVisible(true);
     }
-  }, [searchParams]);
+  }, [isDraftMode, searchParams]);
 
   if (!isVisible) return null;
 

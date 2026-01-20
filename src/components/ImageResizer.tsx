@@ -9,10 +9,11 @@ interface ImageResizerProps {
   documentId: string;
   blockKey: string;
   initialWidth: number | string; // 1-100 or '100%'
+  isDraftMode?: boolean;
   children: React.ReactNode;
 }
 
-function ImageResizerContent({ documentId, blockKey, initialWidth, children }: ImageResizerProps) {
+function ImageResizerContent({ documentId, blockKey, initialWidth, isDraftMode, children }: ImageResizerProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
@@ -30,11 +31,30 @@ function ImageResizerContent({ documentId, blockKey, initialWidth, children }: I
   const debounceTimer = useRef<NodeJS.Timeout>(undefined);
 
   useEffect(() => {
-    // Show if ?admin=true is in URL OR if we are in development mode
-    if (searchParams.get('admin') === 'true' || process.env.NODE_ENV === 'development') {
+    // Show if:
+    // 1. In Draft Mode (from prop)
+    // 2. In Development
+    // 3. URL has ?admin=true
+    // 4. URL has ?admin_key or localStorage has it
+    
+    const urlKey = searchParams.get('admin_key') || searchParams.get('admin_access_key');
+    const storedKey = localStorage.getItem('admin_access_key');
+    
+    if (isDraftMode || process.env.NODE_ENV === 'development') {
+      setIsVisible(true);
+    } else if (urlKey) {
+      localStorage.setItem('admin_access_key', urlKey);
+      setIsVisible(true);
+      
+      // Clean URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('admin_key');
+      url.searchParams.delete('admin_access_key');
+      window.history.replaceState({}, '', url);
+    } else if (storedKey) {
       setIsVisible(true);
     }
-  }, [searchParams]);
+  }, [isDraftMode, searchParams]);
 
   const updateWidth = async (newWidth: number) => {
     setWidth(newWidth);
@@ -42,18 +62,25 @@ function ImageResizerContent({ documentId, blockKey, initialWidth, children }: I
     
     // Clear existing timer
     if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
+        clearTimeout(debounceTimer.current);
     }
 
     // Set new timer for API call (debounce 800ms)
     debounceTimer.current = setTimeout(async () => {
       setIsSaving(true);
       try {
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+        };
+        
+        const savedKey = localStorage.getItem('admin_access_key');
+        if (savedKey) {
+          headers['x-admin-key'] = savedKey;
+        }
+
         const response = await fetch('/api/sanity/resize-image', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
           body: JSON.stringify({
             documentId,
             blockKey,
