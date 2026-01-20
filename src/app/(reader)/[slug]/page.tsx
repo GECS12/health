@@ -35,7 +35,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
 
   const fetchClient = isEnabled 
     ? client.withConfig({ 
-        token: process.env.SANITY_API_READ_TOKEN || process.env.SANITY_API_WRITE_TOKEN, 
+        token: process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_READ_TOKEN, 
         perspective: 'previewDrafts', 
         useCdn: false,
         stega: { 
