@@ -445,7 +445,7 @@ a {
   min-height: 100vh;
   overflow-y: auto;
   background-color: var(--bg-color);
-  padding: 180px 64px 96px; /* Perfect Alignment with sidebar heading 'Saúde, Medicina E Ciência' and extra majestic clearance */
+  padding: 155px 64px 96px; /* Super-fine alignment with sidebar section baseline */
   display: flex;
   justify-content: center;
   position: relative;
@@ -454,12 +454,12 @@ a {
 /* Inner content wrapper from layout.tsx */
 .content-inner {
   width: 100%;
-  max-width: 1200px; /* Cinematic expansive width */
+  max-width: 1000px; /* Balanced width for optimal readability */
 }
 
 @media (min-width: 1440px) {
   .content-inner {
-    max-width: 1300px;
+    max-width: 1100px; /* Scaling according to screen */
   }
 }
 
@@ -828,6 +828,7 @@ a {
   justify-content: center;
   align-items: center;
   grid-column: 2;
+  padding-top: 24px; /* Lowered from 12px to comfortably detach from top edge */
 }
 
 .header-right-container {
@@ -1190,13 +1191,49 @@ a {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.reference-item {
+.references-group {
   display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  flex-direction: column;
+  gap: 0;
+  margin: 32px 0;
+  width: 100%;
+}
+
+.reference-item {
+  display: block;
+  width: 100%;
+  margin-bottom: 0px;
+  padding: 10px 0;
   border-bottom: 1px solid var(--border-color);
-  scroll-margin-top: 5rem; /* Ensure jump doesn't hide behind header/progress bar */
+  scroll-margin-top: 100px;
+  clear: both;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  transition: background-color 0.2s ease;
+}
+
+.reference-line {
+  margin-bottom: 4px;
+}
+
+.reference-line:last-child {
+  margin-bottom: 0;
+}
+
+.reference-item-plain {
+  padding: 4px 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.reference-item:last-child {
+  border-bottom: none;
+}
+
+.reference-item:hover {
+  background-color: var(--hover-bg);
 }
 
 .search-header {
@@ -2251,18 +2288,7 @@ a {
   display: inline;
 }
 
-/* Reference Item Styles - Forced Vertical List */
-.reference-item {
-  display: block;
-  width: 100%;
-  margin-bottom: 12px;
-  padding-left: 0;
-  clear: both;
-  font-family: var(--font-serif);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
+/* Reference items consolidated above */
 
 .reference-item:target {
   background-color: var(--accent-warm-light);

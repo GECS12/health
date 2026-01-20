@@ -1,3 +1,4 @@
+import React from 'react'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '../lib/sanity'
 import Image from 'next/image'
@@ -72,28 +73,125 @@ const ReferenceItem = ({ children }: { children: any }) => {
   return children
 }
 
-const CitationsWrapper = ({ children }: { children: any }) => {
-  const processChild = (child: any, i: number) => {
-    if (typeof child === 'string') {
-      const lines = child.split('\n');
-      if (lines.length > 1) {
-        return lines.map((line, j) => (
-          <ReferenceItem key={`${i}-${j}`}>
-            {line}
-          </ReferenceItem>
-        ));
+const CitationsWrapper = ({ children, isReference }: { children: any, isReference?: boolean }) => {
+  // 1. Recursive renderer for normal text (preserving inline flow)
+  if (!isReference) {
+    const processNodes = (node: any): any => {
+      if (node === null || node === undefined || typeof node === 'boolean') return null;
+      if (typeof node === 'string') {
+        return <Citation>{node}</Citation>;
       }
-      return <ReferenceItem key={i}>{child}</ReferenceItem>
+      if (Array.isArray(node)) {
+        return node.map((child, i) => <React.Fragment key={i}>{processNodes(child)}</React.Fragment>);
+      }
+      return node;
     }
-    return <ReferenceItem key={i}>{child}</ReferenceItem>
+    return <>{processNodes(children)}</>;
   }
 
-  if (Array.isArray(children)) {
-    return <>{children.map((child, i) => processChild(child, i))}</>
+  // 2. Specialized logic for bibliography items (handling Smart Grouping and blocks)
+  const isBreakOrEmpty = (node: any): boolean => {
+    if (!node) return true;
+    if (typeof node === 'string') {
+      // Remove common whitespace and see if anything is left
+      const cleaned = node.replace(/[\s\n\r\t\u00A0\u200B]+/g, '').trim();
+      return cleaned.length === 0;
+    }
+    if (Array.isArray(node)) return node.length === 0 || node.every(isBreakOrEmpty);
+    if (typeof node === 'object') {
+      const type = node.type;
+      const typeName = typeof type === 'string' ? type.toLowerCase() : (type?.name?.toLowerCase() || type?.displayName?.toLowerCase() || '');
+      
+      if (typeName === 'br' || node.props?.node?._type === 'break' || node.props?.node?._type === 'break') return true;
+      
+      // If it's a wrapper, check its children
+      if (node.props?.children) {
+        return isBreakOrEmpty(node.props.children);
+      }
+      
+      // If it has no children and is not a "known" contentful element, consider it empty
+      // but let's be safe and only consider it empty if it matches our "void-like" criteria
+      if (['hr', 'img', 'video', 'iframe'].includes(typeName)) return false;
+      return !node.props?.children;
+    }
+    return false;
   }
+
+  const collectNodes = (node: any): any[] => {
+    if (isBreakOrEmpty(node)) return [];
+    
+    if (typeof node === 'string') {
+      return node.split('\n').filter(line => !isBreakOrEmpty(line));
+    }
+    if (Array.isArray(node)) {
+      return node.flatMap(collectNodes);
+    }
+    return [node];
+  }
+
+  const nodes = (Array.isArray(children) ? children : [children]).flatMap(collectNodes);
   
-  return <>{processChild(children, 0)}</>
+  const groups: any[][] = [];
+  nodes.forEach(node => {
+    const text = getLeafText(node);
+    const isNewRef = text.match(/^\d+\s*[–\-\—\.\)]\s+/);
+    
+    if (isNewRef || groups.length === 0) {
+      groups.push([node]);
+    } else {
+      groups[groups.length - 1].push(node);
+    }
+  });
+
+  return (
+    <>
+      {groups.map((group, i) => {
+        const firstNode = group[0];
+        const firstText = getLeafText(firstNode);
+        const refMatch = firstText.match(/^(\d+)\s*[–\-\—\.\)]\s+/);
+        const refNumber = refMatch ? refMatch[1] : null;
+
+        const content = group
+          .map((item, j) => {
+            if (isBreakOrEmpty(item)) return null;
+            const renderedItem = typeof item === 'string' ? <Citation>{item}</Citation> : item;
+            if (isBreakOrEmpty(renderedItem)) return null;
+            return <div key={j} className="reference-line">{renderedItem}</div>;
+          })
+          .filter(Boolean);
+
+        if (content.length === 0) return null;
+
+        if (refNumber) {
+          return (
+            <div 
+              key={i} 
+              id={`ref-${refNumber}`} 
+              className="reference-item"
+              style={{ scrollMarginTop: '100px' }}
+            >
+              <a 
+                href={`#cite-ref-${refNumber}`}
+                className="back-link-to-citation"
+                title={`Voltar para citação ${refNumber}`}
+                style={{ 
+                  color: 'inherit', 
+                  textDecoration: 'none',
+                  display: 'block'
+                }}
+              >
+                {content}
+              </a>
+            </div>
+          );
+        }
+
+        return <div key={i} className="reference-item-plain">{content}</div>;
+      })}
+    </>
+  );
 }
+
 
 const components: PortableTextComponents = {
   types: {
@@ -219,7 +317,7 @@ const components: PortableTextComponents = {
       const isReference = text.match(/^\d+\s*[–\-\—\.\)]\s+/)
       
       if (isReference) {
-        return <div className="references-group"><CitationsWrapper>{children}</CitationsWrapper></div>
+        return <div className="references-group"><CitationsWrapper isReference>{children}</CitationsWrapper></div>
       }
       
       return <p><CitationsWrapper>{children}</CitationsWrapper></p>

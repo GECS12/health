@@ -34,7 +34,7 @@ export function Header() {
             onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
             title="Pesquisar"
           >
-            <Search size={16} />
+            <Search size={20} />
             <span className="search-text">Clique ou escreva para pesquisar...</span>
             <div className="search-trigger-shortcut">⌘K</div>
           </button>
