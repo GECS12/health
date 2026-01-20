@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   description: 'Compreender a nutrição para uma vida melhor.',
 };
 
-import { ReadingProgressProvider } from '@/context/ReadingProgressContext';
 import { MobileMenuProvider } from '@/context/MobileMenuContext';
 
 export default function RootLayout({
@@ -27,9 +26,7 @@ export default function RootLayout({
       <body className={`${ebGaramond.variable}`}>
         <ThemeProvider>
           <MobileMenuProvider>
-            <ReadingProgressProvider>
-              {children}
-            </ReadingProgressProvider>
+            {children}
           </MobileMenuProvider>
         </ThemeProvider>
       </body>

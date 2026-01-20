@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: ArticleProps) {
           <Bibliography citations={article.citations} />
         )}
 
-        <MarkAsRead slug={slug} />
+
 
         <PreFetchNavigation 
           prevSlug={prevArticle?.slug} 

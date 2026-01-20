@@ -75,13 +75,7 @@ const getAllSectionIds = (sections: Section[]): string[] => {
   return ids;
 };
 
-// Check if a section or its children *contains* any read posts
-const sectionHasReadContent = (section: Section, isRead: (slug: string) => boolean): boolean => {
-  // Check direct posts
-  if (section.posts.some(p => isRead(p.slug))) return true;
-  // Check subsections
-  return section.subSections.some(sub => sectionHasReadContent(sub, isRead));
-};
+
 
 function SidebarControls({ tree }: { tree: Section[] }) {
   const { collapseAll, setExpandedSections, expandedSections } = useSidebarState();

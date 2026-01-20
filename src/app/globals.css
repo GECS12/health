@@ -810,7 +810,7 @@ a {
 /* Portable Text Styles — Reading Focused, Quiet Elegance */
 .portable-text {
   font-family: var(--font-serif);
-  font-size: 20.5px; /* Increased from 19.5px */
+  font-size: calc(20.5px * var(--body-font-scale)); /* Scalable portable text */
   line-height: 1.85;
   color: var(--text-primary);
   letter-spacing: 0.005em;
@@ -2440,47 +2440,7 @@ a {
   z-index: 1;
 }
 
-/* Mark as Read Component */
-.mark-as-read-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 64px 0;
-}
 
-.mark-as-read-button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
-  border-radius: 99px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-color);
-  color: var(--text-secondary);
-  font-family: var(--font-serif);
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.mark-as-read-button:hover {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
-  background: var(--active-bg);
-}
-
-.mark-as-read-button.is-read {
-  border-color: var(--accent-color);
-  background: var(--active-bg);
-  color: var(--text-primary);
-}
-
-.mark-as-read-divider {
-  width: 40px;
-  height: 1px;
-  background: var(--border-color);
-  margin-top: 32px;
-}
 
 .landing-part-title {
   font-family: var(--font-serif);
