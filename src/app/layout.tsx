@@ -23,13 +23,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isEnabled } = await draftMode();
+
   return (
     <html lang="pt" suppressHydrationWarning>
       <body className={`${ebGaramond.variable}`}>
         <ThemeProvider>
           <MobileMenuProvider>
             {children}
-            {(await draftMode()).isEnabled && (
+            {isEnabled && (
               <VisualEditing />
             )}
           </MobileMenuProvider>
@@ -38,4 +40,3 @@ export default async function RootLayout({
     </html>
   );
 }
-
