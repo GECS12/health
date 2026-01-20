@@ -19,10 +19,11 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
     if (isHovered && !content) {
       // Try DOM lookup for manual references
       const refElement = document.getElementById(`ref-${index}`);
-      if (refElement) {
+        if (refElement) {
         // Clean up the text (remove the "1 –" prefix)
         const fullText = refElement.innerText;
-        const cleanedText = fullText.replace(/^\d+\s*[–\-\—\.\)]\s*/, '').trim();
+        // Remove number prefix and replace newlines with spaces for clean display
+        const cleanedText = fullText.replace(/^\d+\s*[–\-\—\.\)]\s*/, '').replace(/\n+/g, ' ').trim();
         setLookupContent(cleanedText);
       }
     }
@@ -31,11 +32,9 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
   useEffect(() => {
     if (isHovered && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      const scrollY = window.scrollY;
-      const scrollX = window.scrollX;
       
       setPosition({
-        top: rect.top,
+        top: rect.bottom, // Use bottom for placement below
         left: rect.left + rect.width / 2,
       });
     }
@@ -45,7 +44,7 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
     <div 
       ref={triggerRef}
       className="footnote-tooltip-trigger"
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => setIsHovered(true)} // Keep trigger active
       onMouseLeave={() => setIsHovered(false)}
     >
       {children}
@@ -53,16 +52,16 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
       <AnimatePresence>
         {isHovered && lookupContent && (
           <motion.div
-            initial={{ opacity: 0, y: 5, scale: 0.95 }}
+            initial={{ opacity: 0, y: -5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5, scale: 0.95 }}
+            exit={{ opacity: 0, y: -5, scale: 0.95 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="footnote-tooltip-content"
             style={{ 
               position: 'fixed',
-              top: position.top - 8, 
+              top: position.top + 8, // Place below with gap
               left: position.left,
-              transform: 'translate(-50%, -100%)',
+              transform: 'translate(-50%, 0)', // Transform from top center
               zIndex: 9999,
               pointerEvents: 'none'
             }}
