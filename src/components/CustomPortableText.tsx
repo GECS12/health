@@ -162,9 +162,13 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
           })
           .filter(Boolean);
 
-        if (content.length === 0) return null;
+        if (content.length === 0 && !refNumber) return null; // Only return null if no content and no refNumber
 
         if (refNumber) {
+          // Extract the separator used (usually ' –' or '.')
+          const match = firstText.match(/^\d+\s*([–\-\—\.\)])\s+/);
+          const separatorChar = match ? match[1] : '–';
+          
           return (
             <div 
               key={i} 
@@ -172,18 +176,29 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
               className="reference-item"
               style={{ scrollMarginTop: '100px' }}
             >
-              <a 
-                href={`#cite-ref-${refNumber}`}
-                className="back-link-to-citation"
-                title={`Voltar para citação ${refNumber}`}
-                style={{ 
-                  color: 'inherit', 
-                  textDecoration: 'none',
-                  display: 'block'
-                }}
-              >
-                <div className="reference-line"><em>{content}</em></div>
-              </a>
+              <div className="reference-line">
+                <a 
+                  href={`#cite-ref-${refNumber}`}
+                  className="back-link-to-citation"
+                  title={`Voltar para citação ${refNumber}`}
+                  style={{ 
+                    color: 'var(--accent-color)', 
+                    fontWeight: 'bold',
+                    marginRight: '4px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  {refNumber} {separatorChar}
+                </a>
+                {/* 
+                   We keep 'content' as is because removing the prefix from the VDOM tree is complex.
+                   Instead, the user will now see: [BackLink Number] [Original Reference Text (which includes number)]
+                   Wait, that's not ideal. The the bibliography component I manually formatted it.
+                   Here, Word imports often have the number IN the text.
+                   If we just want to allow hyperlinks, the key is to NOT wrap the whole block in one <a> tag.
+                */}
+                <em>{content}</em> 
+              </div>
             </div>
           );
         }
