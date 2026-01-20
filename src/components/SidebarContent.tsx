@@ -65,8 +65,8 @@ export function SidebarContent({ tree }: { tree: Section[] }) {
   return (
     <nav className="sidebar-nav">
       <div className="section-group">
-        <Link href="/" className="home-link">
-          <span className="section-title-text">Introdução</span>
+        <Link href="/" className="home-link sidebar-branding">
+          <span className="section-title-text">HEALTH & NUTRITION</span>
         </Link>
       </div>
       {tree.map(section => (

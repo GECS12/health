@@ -10,6 +10,7 @@ import { ScrollReveal } from '@/components/ScrollReveal'
 import { Comments } from '@/components/Comments'
 import { Bibliography } from '@/components/Bibliography'
 import { EditButton } from '@/components/EditButton'
+import { MarkAsRead } from '@/components/MarkAsRead'
 
 
 interface ArticleProps {
@@ -103,6 +104,8 @@ export default async function ArticlePage({ params }: ArticleProps) {
         {article.citations && article.citations.length > 0 && (
           <Bibliography citations={article.citations} />
         )}
+
+        <MarkAsRead slug={slug} />
 
         <Comments postId={article._id} />
         

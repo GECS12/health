@@ -245,20 +245,29 @@ a {
 }
 
 /* Sidebar Navigation Items */
-/* Special Home Link (Introdução) */
-.home-link {
+.sidebar-branding {
   display: block;
-  background-color: transparent;
-  color: #000; /* Match Parts color */
-  padding: 10px 20px 4px 20px; /* Reduced vertical padding */
+  padding: 24px 20px 20px 20px !important;
   font-family: var(--font-serif);
-  font-size: 24px; /* Increased font size */
-  font-weight: 800; /* Match Parts weight */
-  text-shadow: 0.1px 0 0 currentColor; /* Smudge blacker */
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--accent-light);
+  margin-bottom: 24px !important;
   text-decoration: none;
-  margin-bottom: 0; /* More compact */
-  width: 100%;
-  border-radius: 0;
+  transition: all 0.2s;
+  line-height: 1.1;
+}
+
+.sidebar-branding:hover {
+  color: var(--accent-color) !important;
+  background-color: var(--active-bg);
+}
+
+.sidebar-branding span {
+  display: block;
 }
 
 .home-link:hover {
@@ -2064,28 +2073,34 @@ a {
 
 .landing-hero {
   text-align: center;
-  margin-bottom: 96px;
-  padding: 0 20px;
+  margin-bottom: 120px;
+  padding: 80px 20px;
+  background: radial-gradient(circle at center, var(--active-bg) 0%, transparent 70%);
 }
 
 
 .landing-title {
   font-family: var(--font-serif);
-  font-size: 56px;
+  font-size: 84px;
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
   color: var(--text-primary);
-  margin-bottom: 24px;
-  line-height: 1.15;
+  margin-bottom: 32px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .landing-subtitle {
   font-family: var(--font-serif);
-  font-size: 20px;
+  font-size: 26px;
+  font-weight: 400;
   color: var(--text-secondary);
-  line-height: 1.65;
-  max-width: 680px;
-  margin: 0 auto 40px;
+  max-width: 740px;
+  margin: 0 auto 56px auto;
+  line-height: 1.4;
+  opacity: 0.7;
 }
 
 .landing-cta {
@@ -2136,30 +2151,91 @@ a {
   gap: 32px;
 }
 
-.landing-part-card {
-  background: var(--sidebar-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 32px;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-soft);
+.landing-index-item {
+  position: relative;
+  padding: 64px 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: all var(--transition-elegant);
 }
 
-.landing-part-card:hover {
-  border-color: var(--accent-light);
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-4px);
+.landing-index-item:last-child {
+  border-bottom: none;
+}
+
+.landing-index-item:hover {
+  background-color: var(--active-bg);
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.landing-part-header {
+  margin-bottom: 24px;
 }
 
 .landing-part-number {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
+  font-family: var(--font-serif);
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--accent-light);
+  line-height: 1;
+  opacity: 0.15;
+  position: absolute;
+  left: -20px;
+  top: 40px;
+  pointer-events: none;
+  font-style: italic;
+}
+
+.landing-part-title {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Mark as Read Component */
+.mark-as-read-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 64px 0;
+}
+
+.mark-as-read-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-radius: 99px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  color: var(--text-secondary);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mark-as-read-button:hover {
+  border-color: var(--accent-color);
   color: var(--accent-color);
-  margin-bottom: 12px;
-  opacity: 0.8;
+  background: var(--active-bg);
+}
+
+.mark-as-read-button.is-read {
+  border-color: var(--accent-color);
+  background: var(--active-bg);
+  color: var(--text-primary);
+}
+
+.mark-as-read-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--border-color);
+  margin-top: 32px;
 }
 
 .landing-part-title {
