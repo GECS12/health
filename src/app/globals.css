@@ -105,13 +105,15 @@
 /* ... existing code ... */
 
 .sidebar-branding {
-  display: block;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   padding: 24px 20px 20px 20px !important;
   font-family: var(--font-serif);
-  font-size: 20px !important;
+  font-size: 32px !important;
   font-weight: 900 !important;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   color: var(--text-primary) !important;
   border-bottom: 2px solid var(--accent-light);
   margin-bottom: 24px !important;
@@ -119,6 +121,7 @@
   transition: all 0.2s;
   line-height: 1.1;
   background-color: transparent !important; /* Ensure no background */
+  text-align: center;
 }
 
 /* ... existing code ... */
@@ -684,6 +687,51 @@ a {
 @media (min-width: 1440px) {
   .content-inner {
     max-width: 1100px; /* Scaling according to screen */
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 100%;
+    --body-font-scale: 0.9;
+  }
+
+  .main-content {
+    padding: 100px 20px 60px !important; /* Reduced padding for mobile */
+  }
+
+  .article-title {
+    font-size: 32px;
+    margin-bottom: 24px;
+    padding: 0 10px;
+  }
+
+  .breadcrumbs {
+    font-size: 11px;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+
+  .layout-container {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+  
+  .sidebar {
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --body-font-scale: 0.85;
+  }
+
+  .sidebar-branding {
+    font-size: 24px !important; /* Slightly smaller on very narrow screens */
   }
 }
 
