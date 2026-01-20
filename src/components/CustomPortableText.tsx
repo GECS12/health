@@ -4,6 +4,22 @@ import { urlFor } from '../lib/sanity'
 import Image from 'next/image'
 import { EditButton } from './EditButton'
 import { YouTubePlayer } from './YouTubePlayer'
+import { FootnotePreview } from './FootnotePreview'
+
+interface CitationData {
+  _id: string;
+  citationId: string;
+  authors: string[];
+  year: number;
+  title: string;
+  source?: string;
+  volume?: string;
+  issue?: string;
+  pages?: string;
+  doi?: string;
+  url?: string;
+  notes?: string;
+}
 
 const Citation = ({ children }: { children: any }) => {
   const text = Array.isArray(children) ? children[0] : children
@@ -21,14 +37,20 @@ const Citation = ({ children }: { children: any }) => {
       const nums = content.split(',').map(n => n.trim())
       
       return (
-        <span key={i} className="citation-wrapper">
+        <span className="citation-wrapper" key={i}>
           {nums.map((num, j) => (
-            <span key={j} id={`cite-ref-${num}`} style={{ scrollMarginTop: '100px' }}>
-              {j > 0 && ','}
-              <a href={`#ref-${num}`} className="citation-link">
-                {num}
-              </a>
-            </span>
+            <FootnotePreview 
+              key={j} 
+              index={num} 
+              content={null}
+            >
+              <span id={`cite-ref-${num}`} style={{ scrollMarginTop: '100px' }}>
+                {j > 0 && ','}
+                <a href={`#ref-${num}`} className="citation-link">
+                  {num}
+                </a>
+              </span>
+            </FootnotePreview>
           ))}
         </span>
       )
@@ -165,6 +187,10 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
         if (content.length === 0) return null;
 
         if (refNumber) {
+          // Extract the separator used (usually ' –' or '.')
+          const match = firstText.match(/^\d+\s*([–\-\—\.\)])\s+/);
+          const separatorChar = match ? match[1] : '–';
+          
           return (
             <div 
               key={i} 
@@ -172,18 +198,22 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
               className="reference-item"
               style={{ scrollMarginTop: '100px' }}
             >
-              <a 
-                href={`#cite-ref-${refNumber}`}
-                className="back-link-to-citation"
-                title={`Voltar para citação ${refNumber}`}
-                style={{ 
-                  color: 'inherit', 
-                  textDecoration: 'none',
-                  display: 'block'
-                }}
-              >
-                <div className="reference-line"><em>{content}</em></div>
-              </a>
+              <div className="reference-line">
+                <a 
+                  href={`#cite-ref-${refNumber}`}
+                  className="back-link-to-citation"
+                  title={`Voltar para citação ${refNumber}`}
+                  style={{ 
+                    color: 'var(--accent-color)', 
+                    fontWeight: 'bold',
+                    marginRight: '4px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  {refNumber} {separatorChar}
+                </a>
+                <em>{content}</em> 
+              </div>
             </div>
           );
         }
@@ -195,7 +225,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
 }
 
 
-const getComponents = (documentId?: string, isDraftMode?: boolean): PortableTextComponents => ({
+const getComponents = (documentId?: string, isDraftMode?: boolean, citations?: CitationData[]): PortableTextComponents => ({
   types: {
     image: ({ value, isInline }) => {
       if (!value?.asset?._ref && !value?.asset?._id) {
@@ -331,23 +361,54 @@ const getComponents = (documentId?: string, isDraftMode?: boolean): PortableText
       <sup style={{ fontSize: '0.75em', verticalAlign: 'super', color: '#3b82f6' }}>{children}</sup>
     ),
     // Reference link annotation - links to #ref-N anchor
-    referenceLink: ({ children, value }) => (
-      <a 
-        href={`#ref-${value?.refNumber}`} 
-        id={`cite-ref-${value?.refNumber}`}
-        className="reference-link-inline"
-        style={{ 
-          fontSize: '0.75em', 
-          verticalAlign: 'super', 
-          color: '#3b82f6', 
-          textDecoration: 'none',
-          cursor: 'pointer',
-          scrollMarginTop: '100px'
-        }}
-      >
-        {children}
-      </a>
-    ),
+    referenceLink: ({ children, value }) => {
+      const refId = value?.refNumber;
+      const citation = citations?.find(c => c.citationId === refId || c._id === refId);
+      
+      const formatAuthors = (authors: string[]) => {
+        if (!authors || authors.length === 0) return 'Unknown Author';
+        if (authors.length === 1) return authors[0];
+        if (authors.length === 2) return `${authors[0]} & ${authors[1]}`;
+        return `${authors.slice(0, -1).join(', ')}, & ${authors[authors.length - 1]}`;
+      };
+
+      const previewContent = citation ? (
+        <span>
+          <em>
+            {formatAuthors(citation.authors)}. {citation.title}. {' '}
+            {citation.source && (
+              <>
+                {citation.source}
+                {citation.volume && <>; {citation.volume}</>}
+                {citation.issue && <>({citation.issue})</>}
+                {citation.pages && <>: {citation.pages}</>}
+                .
+              </>
+            )}
+          </em>
+        </span>
+      ) : `Referência #${refId}`;
+
+      return (
+        <FootnotePreview index={refId} content={previewContent}>
+          <a 
+            href={`#ref-${refId}`} 
+            id={`cite-ref-${refId}`}
+            className="reference-link-inline"
+            style={{ 
+              fontSize: '0.75em', 
+              verticalAlign: 'super', 
+              color: '#3b82f6', 
+              textDecoration: 'none',
+              cursor: 'pointer',
+              scrollMarginTop: '100px'
+            }}
+          >
+            {children}
+          </a>
+        </FootnotePreview>
+      );
+    },
     // Link annotation
     link: ({ children, value }) => (
       <a 
@@ -362,8 +423,8 @@ const getComponents = (documentId?: string, isDraftMode?: boolean): PortableText
   },
 })
 
-export function CustomPortableText({ value, documentId, isDraftMode }: { value: any, documentId?: string, isDraftMode?: boolean }) {
-  const components = getComponents(documentId, isDraftMode)
+export function CustomPortableText({ value, documentId, isDraftMode, citations }: { value: any, documentId?: string, isDraftMode?: boolean, citations?: CitationData[] }) {
+  const components = getComponents(documentId, isDraftMode, citations)
   return (
     <div className="portable-text">
       <PortableText value={value} components={components} />

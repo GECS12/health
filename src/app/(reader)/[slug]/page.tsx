@@ -116,7 +116,12 @@ export default async function ArticlePage({ params }: ArticleProps) {
         />
         <div className="article-body-wrapper">
           <ScrollReveal>
-            <CustomPortableText value={article.body} documentId={article._id} isDraftMode={isEnabled} />
+            <CustomPortableText 
+              value={article.body} 
+              documentId={article._id} 
+              isDraftMode={isEnabled} 
+              citations={article.citations}
+            />
           </ScrollReveal>
         </div>
 
