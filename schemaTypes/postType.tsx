@@ -175,35 +175,7 @@ export const postType = defineType({
           ]
         },
         {
-          type: 'object',
-          name: 'video',
-          title: 'Video',
-          fields: [
-            {
-              name: 'url',
-              type: 'url',
-              title: 'Video URL',
-              description: 'Paste a YouTube or Vimeo video URL',
-              validation: (rule) => rule.required(),
-            },
-            {
-              name: 'caption',
-              type: 'string',
-              title: 'Caption (optional)',
-            }
-          ],
-          preview: {
-            select: {
-              url: 'url',
-              caption: 'caption'
-            },
-            prepare({ url, caption }) {
-              return {
-                title: caption || 'Video',
-                subtitle: url,
-              }
-            }
-          }
+          type: 'youTube',
         },
       ],
     }),
