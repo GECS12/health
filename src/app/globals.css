@@ -86,16 +86,16 @@
 
 [data-theme='dark'] {
   --bg-color: #0E0E0E; /* Pure deep background */
-  --sidebar-bg: #141414;
+  --sidebar-bg: #121212;
   --toc-bg: var(--bg-color);
-  --text-primary: #EDEDED; /* Softened white */
-  --text-secondary: #A0A0A0; /* Balanced secondary */
-  --text-muted: #666666;
-  --border-color: #262626; /* Darker, more subtle borders */
-  --accent-color: #D1D9E0;
-  --accent-light: #5A6B7C;
-  --active-bg: rgba(255, 255, 255, 0.03); /* Much more subtle active state */
-  --hover-bg: rgba(255, 255, 255, 0.02);
+  --text-primary: #F0EDE8; /* Warmer white */
+  --text-secondary: #B8B0A0; /* Warmer secondary with better contrast */
+  --text-muted: #7A7468;
+  --border-color: #2A2520; /* Warmer, subtle borders */
+  --accent-color: #C9A982; /* Warm gold accent */
+  --accent-light: #8B7355; /* Muted gold for subtle uses */
+  --active-bg: rgba(201, 169, 130, 0.08); /* Gold-tinted active state */
+  --hover-bg: rgba(201, 169, 130, 0.05);
 }
 
 /* ... existing code ... */
@@ -494,7 +494,7 @@ a {
 }
 
 [data-theme='dark'] .sub-links {
-  border-left-color: #333;
+  border-left-color: #3D352C;
 }
 
 .sub-link {
@@ -515,7 +515,7 @@ a {
 }
 
 [data-theme='dark'] .sub-link {
-  color: #BBBBBB;
+  color: #D0C8BC;
 }
 
 /* Indent deeper levels - handled by recursion now */
@@ -1411,7 +1411,7 @@ a {
 .reference-item {
   display: block;
   width: 100%;
-  margin-bottom: 0px;
+  margin-bottom: 16px;
   padding: 6px 0;
   border-bottom: 1px solid var(--border-color);
   scroll-margin-top: 100px;
@@ -2396,28 +2396,31 @@ a {
   align-items: center;
   gap: 12px;
   padding: 16px 32px;
-  background: var(--accent-color);
-  color: white; /* Default for light mode where accent is dark */
+  background: transparent;
+  color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
   font-weight: 600;
+  border: 1.5px solid var(--border-color);
   border-radius: 8px;
   transition: all var(--transition-normal);
-  box-shadow: var(--shadow-medium);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .landing-cta {
-  color: var(--bg-color); /* Dark text on light accent background for contrast */
+  border-color: var(--border-color);
 }
 
 .landing-cta:hover {
-  background: var(--accent-warm);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-elevated);
+  background: var(--active-bg);
+  border-color: var(--text-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme='dark'] .landing-cta:hover {
-  background: white; /* Brighter on hover in dark mode */
+  background: var(--active-bg);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
 }
 
 

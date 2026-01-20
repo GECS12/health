@@ -157,7 +157,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
             if (isBreakOrEmpty(item)) return null;
             const renderedItem = typeof item === 'string' ? <Citation>{item}</Citation> : item;
             if (isBreakOrEmpty(renderedItem)) return null;
-            return <div key={j} className="reference-line"><em>{renderedItem}</em></div>;
+            return <React.Fragment key={j}>{renderedItem}</React.Fragment>;
           })
           .filter(Boolean);
 
@@ -181,13 +181,13 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
                   display: 'block'
                 }}
               >
-                {content}
+                <div className="reference-line"><em>{content}</em></div>
               </a>
             </div>
           );
         }
 
-        return <div key={i} className="reference-item-plain">{content}</div>;
+        return <div key={i} className="reference-item-plain"><div className="reference-line"><em>{content}</em></div></div>;
       })}
     </>
   );
