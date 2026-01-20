@@ -89,31 +89,29 @@
 }
 
 [data-theme='dark'] {
-  --bg-color: #050505; /* Deep, rich black */
-  --sidebar-bg: #090909; /* Slightly lighter black for depth */
+  --bg-color: #0E0E0E; /* Pure deep background */
+  --sidebar-bg: #121212;
   --toc-bg: var(--bg-color);
-  --text-primary: #EDEDED; /* Bright white/grey */
-  --text-secondary: #C8C3B8; /* Warm light grey */
-  --text-muted: #888275;
-  --border-color: #222222;
-  --accent-color: #D4B48C; /* Tan/Gold that pops on black */
-  --accent-light: #A68A64;
-  --active-bg: rgba(212, 180, 140, 0.15); /* Significantly more visible active state */
-  --hover-bg: rgba(212, 180, 140, 0.08);
+  --text-primary: #F0EDE8; /* Warmer white */
+  --text-secondary: #B8B0A0; /* Warmer secondary with better contrast */
+  --text-muted: #7A7468;
+  --border-color: #2A2520; /* Warmer, subtle borders */
+  --accent-color: #C9A982; /* Warm gold accent */
+  --accent-light: #8B7355; /* Muted gold for subtle uses */
+  --active-bg: rgba(201, 169, 130, 0.08); /* Gold-tinted active state */
+  --hover-bg: rgba(201, 169, 130, 0.05);
 }
 
 /* ... existing code ... */
 
 .sidebar-branding {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: block;
   padding: 24px 20px 20px 20px !important;
   font-family: var(--font-serif);
-  font-size: 32px !important;
+  font-size: 20px !important;
   font-weight: 900 !important;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   color: var(--text-primary) !important;
   border-bottom: 2px solid var(--accent-light);
   margin-bottom: 24px !important;
@@ -121,7 +119,6 @@
   transition: all 0.2s;
   line-height: 1.1;
   background-color: transparent !important; /* Ensure no background */
-  text-align: center;
 }
 
 /* ... existing code ... */
@@ -188,31 +185,12 @@ body {
   margin: 0;
   font-family: var(--font-serif);
   line-height: 1.75;
-  font-size: calc(21px * var(--body-font-scale));
+  font-size: calc(21px * var(--body-font-scale)); /* Scalable body text */
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* More fun, recognizable transition */
-  transition: background-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
-              color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
-              border-color 0.5s ease;
-}
-
-/* ... existing styles ... */
-
-.sub-link.active {
-  color: #5D4930; /* Rich warm brown for LIGHT mode */
-  font-weight: 600;
-  background: var(--active-bg);
-  border-left-color: var(--accent-color);
-}
-
-[data-theme='dark'] .sub-link.active {
-  color: #E8DCC5; /* Light creamy gold for DARK mode - Fixes visibility */
-  background: rgba(212, 180, 140, 0.12);
-  border-left-color: var(--accent-color);
-  text-shadow: 0 0 10px rgba(212, 180, 140, 0.1);
+  transition: background-color var(--transition-elegant), color var(--transition-elegant);
 }
 
 /* Visibility Utilities */
@@ -690,51 +668,6 @@ a {
   }
 }
 
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-  :root {
-    --sidebar-width: 100%;
-    --body-font-scale: 0.9;
-  }
-
-  .main-content {
-    padding: 100px 20px 60px !important; /* Reduced padding for mobile */
-  }
-
-  .article-title {
-    font-size: 32px;
-    margin-bottom: 24px;
-    padding: 0 10px;
-  }
-
-  .breadcrumbs {
-    font-size: 11px;
-    gap: 4px;
-    margin-bottom: 24px;
-  }
-
-  .layout-container {
-    grid-template-columns: 1fr; /* Single column on mobile */
-  }
-  
-  .sidebar {
-    height: auto;
-    position: relative;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
-}
-
-@media (max-width: 480px) {
-  :root {
-    --body-font-scale: 0.85;
-  }
-
-  .sidebar-branding {
-    font-size: 24px !important; /* Slightly smaller on very narrow screens */
-  }
-}
-
 .article-title {
   font-family: var(--font-serif);
   font-size: 42px; /* Increased size */
@@ -1132,7 +1065,7 @@ a {
   border-radius: 14px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-medium);
-  width: 675px; /* Increased to 1.5x of 450px as requested */
+  width: 450px; /* "increase width a lot" */
 }
 
 /* Dark mode specific pill override */

@@ -46,41 +46,15 @@ export function Bibliography({ citations }: BibliographyProps) {
             className="reference-item"
             style={{ scrollMarginTop: '100px' }}
           >
-            <div className="reference-line">
-              <a 
-                href={`#cite-ref-${index + 1}`} 
-                className="back-link-to-citation" 
-                title={`Voltar para citação ${index + 1}`}
-                style={{ color: 'var(--accent-color)', fontWeight: 'bold', marginRight: '4px' }}
-              >
-                {index + 1} –
-              </a>
-              
-              {citation.url ? (
-                <a 
-                  href={citation.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="external-reference-link"
-                  style={{ color: 'inherit', textDecoration: 'none' }}
-                >
-                  <em>
-                    {formatAuthors(citation.authors)}. {citation.title}. {' '}
-                    {citation.source && (
-                      <>
-                        {citation.source}
-                        {citation.volume && <>; {citation.volume}</>}
-                        {citation.issue && <>({citation.issue})</>}
-                        {citation.pages && <>: {citation.pages}</>}
-                        .
-                      </>
-                    )}
-                  </em>
-                  <ExternalLink size={12} style={{ display: 'inline-block', marginLeft: '6px', opacity: 0.6 }} />
-                </a>
-              ) : (
+            <a 
+              href={`#cite-ref-${index + 1}`} 
+              className="back-link-to-citation" 
+              title={`Voltar para citação ${index + 1}`}
+              style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}
+            >
+              <div className="reference-line">
                 <em>
-                  {formatAuthors(citation.authors)}. {citation.title}. {' '}
+                  {index + 1} – {formatAuthors(citation.authors)}. {citation.title}. {' '}
                   {citation.source && (
                     <>
                       {citation.source}
@@ -91,8 +65,8 @@ export function Bibliography({ citations }: BibliographyProps) {
                     </>
                   )}
                 </em>
-              )}
-            </div>
+              </div>
+            </a>
           </div>
         ))}
       </div>
