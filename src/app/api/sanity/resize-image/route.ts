@@ -11,8 +11,12 @@ const client = createClient({
 });
 
 export async function POST(req: Request) {
+  let documentId, blockKey, width;
   try {
-    const { documentId, blockKey, width } = await req.json();
+    const body = await req.json();
+    documentId = body.documentId;
+    blockKey = body.blockKey;
+    width = body.width;
 
     if (!process.env.SANITY_API_WRITE_TOKEN) {
       return NextResponse.json(
@@ -21,6 +25,7 @@ export async function POST(req: Request) {
       );
     }
 
+    const isDev = process.env.NODE_ENV === 'development';
     const authHeader = req.headers.get('x-admin-key');
     const adminKey = process.env.ADMIN_ACCESS_KEY;
     
@@ -33,7 +38,8 @@ export async function POST(req: Request) {
     
     const isKeyValid = adminKey && authHeader === adminKey;
     
-    if (!isKeyValid && !isDraft) {
+    // In development, allow everything. In prod, require key or draft.
+    if (!isDev && !isKeyValid && !isDraft) {
       if (!adminKey) {
         return NextResponse.json({ message: "ADMIN_ACCESS_KEY not set in Netlify" }, { status: 500 });
       }
@@ -43,6 +49,8 @@ export async function POST(req: Request) {
     if (!documentId) return NextResponse.json({ message: "Missing documentId" }, { status: 400 });
     if (!blockKey) return NextResponse.json({ message: "Missing blockKey" }, { status: 400 });
     if (width === undefined) return NextResponse.json({ message: "Missing width" }, { status: 400 });
+
+    console.log("Attempting Sanity Patch:", { documentId, blockKey, width });
 
     // Update the specific block within the body array
     // We target the block where _key matches the provided blockKey
@@ -55,10 +63,15 @@ export async function POST(req: Request) {
       .commit();
 
     return NextResponse.json({ message: "Image updated successfully" });
-  } catch (error) {
-    console.error("Error updating image:", error);
+  } catch (error: any) {
+    console.error("Sanity Update Error Details:", {
+      message: error.message,
+      statusCode: error.statusCode,
+      response: error.response?.body,
+      params: { documentId, blockKey, width }
+    });
     return NextResponse.json(
-      { message: "Error updating image" },
+      { message: `Sanity Error: ${error.message}` },
       { status: 500 }
     );
   }
