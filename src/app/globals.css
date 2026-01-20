@@ -683,7 +683,7 @@ a {
   overflow-y: auto;
   scroll-behavior: smooth;
   background-color: var(--bg-color);
-  padding: 155px 64px 96px; /* Super-fine alignment with sidebar section baseline */
+  padding: 80px 64px 96px; /* Reduced from 155px to pull header up */
   display: flex;
   justify-content: center;
   position: relative;
@@ -854,6 +854,43 @@ a {
 }
 
 /* Ensure citations and technical links have a box model for reliable intersection detection */
+/* --- Article Typography & Visuals --- */
+
+.portable-text p, 
+.portable-text li {
+  margin-bottom: 1.5em;
+}
+
+.portable-text h2, 
+.portable-text h3 {
+  margin-top: 2.5em; /* Breathing room above headings */
+  margin-bottom: 1em;
+}
+
+.portable-text img {
+  border-radius: 8px; /* Soft edges */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Soft shadow */
+  transition: transform 0.3s ease;
+}
+
+
+
+.portable-text blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding: 1em 1.5em;
+  background: rgba(125, 125, 125, 0.05);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  margin: 2em 0;
+}
+
+/* Sidebar Polish */
+.sidebar-link {
+  border-radius: 6px; /* Rounded active/hover states */
+  transition: all 0.2s ease;
+}
+
+/* Citation refinement */
 .citation-link, .reference-link-inline {
   display: inline-block;
   min-width: 0.5ch;
@@ -1076,7 +1113,7 @@ a {
   justify-content: center;
   align-items: center;
   grid-column: 2;
-  padding-top: 24px; /* Lowered from 12px to comfortably detach from top edge */
+  padding-top: 12px; /* Pull search bar up */
 }
 
 .header-right-container {

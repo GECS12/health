@@ -25,11 +25,33 @@ export function Bibliography({ citations }: BibliographyProps) {
     return null;
   }
 
+  const robustClean = (text: string) => {
+    if (!text) return '';
+    // 1. Strip HTML tags
+    let cleaned = text.replace(/<[^>]*>?/gm, '');
+    
+    // 2. Aggressively strip leading numbers, symbols, and separators (recursive)
+    // Using explicit character set for maximum compatibility
+    const noiseRegex = /^[0-9\s\u00A0\-\–\—\.\:\,\;\(\)\[\]\#\/\\]+/;
+    let last;
+    do {
+      last = cleaned;
+      cleaned = cleaned.replace(noiseRegex, '').trim();
+    } while (cleaned !== last);
+    return cleaned;
+  };
+
   const formatAuthors = (authors: string[]) => {
-    if (authors.length === 0) return 'Unknown Author';
-    if (authors.length === 1) return authors[0];
-    if (authors.length === 2) return `${authors[0]} & ${authors[1]}`;
-    return `${authors.slice(0, -1).join(', ')}, & ${authors[authors.length - 1]}`;
+    let text = 'Unknown Author';
+    if (authors && authors.length === 1) text = authors[0];
+    else if (authors && authors.length === 2) text = `${authors[0]} & ${authors[1]}`;
+    else if (authors && authors.length > 2) text = `${authors.slice(0, -1).join(', ')}, & ${authors[authors.length - 1]}`;
+    
+    return robustClean(text);
+  };
+
+  const cleanTitle = (title: string) => {
+    return robustClean(title);
   };
 
   return (
@@ -51,9 +73,9 @@ export function Bibliography({ citations }: BibliographyProps) {
                 href={`#cite-ref-${index + 1}`} 
                 className="back-link-to-citation" 
                 title={`Voltar para citação ${index + 1}`}
-                style={{ color: 'var(--accent-color)', fontWeight: 'bold', marginRight: '4px' }}
+                style={{ color: 'var(--accent-color)', fontWeight: 'bold', marginRight: '4px', textDecoration: 'none' }}
               >
-                {index + 1} –
+                {`${index + 1} – `}
               </a>
               
               {citation.url ? (
@@ -65,7 +87,7 @@ export function Bibliography({ citations }: BibliographyProps) {
                   style={{ color: 'inherit', textDecoration: 'none' }}
                 >
                   <em>
-                    {formatAuthors(citation.authors)}. {citation.title}. {' '}
+                    {formatAuthors(citation.authors)}. {cleanTitle(citation.title)}. {' '}
                     {citation.source && (
                       <>
                         {citation.source}
@@ -80,7 +102,7 @@ export function Bibliography({ citations }: BibliographyProps) {
                 </a>
               ) : (
                 <em>
-                  {formatAuthors(citation.authors)}. {citation.title}. {' '}
+                  {formatAuthors(citation.authors)}. {cleanTitle(citation.title)}. {' '}
                   {citation.source && (
                     <>
                       {citation.source}

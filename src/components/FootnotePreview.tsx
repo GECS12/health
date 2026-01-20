@@ -21,10 +21,14 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
       const refElement = document.getElementById(`ref-${index}`);
         if (refElement) {
         // Clean up the text (remove the "1 –" prefix)
-        const fullText = refElement.innerText;
-        // Remove number prefix and replace newlines with spaces for clean display
-        const cleanedText = fullText.replace(/^\d+\s*[–\-\—\.\)]\s*/, '').replace(/\n+/g, ' ').trim();
-        setLookupContent(cleanedText);
+        // Strip HTML and aggressively strip leading numbers (recursive)
+        let cleaned = refElement.innerText.replace(/<[^>]*>?/gm, '').replace(/\n+/g, ' ').trim();
+        let last;
+        do {
+          last = cleaned;
+          cleaned = cleaned.replace(/^[\[\]\#\d\s\.\:\/\u2010-\u2015\u00A0\u202F\uFEFF\-\–\—)]+/, '').trim();
+        } while (cleaned !== last);
+        setLookupContent(cleaned);
       }
     }
   }, [isHovered, content, index]);

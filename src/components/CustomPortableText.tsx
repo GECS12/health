@@ -6,6 +6,64 @@ import { EditButton } from './EditButton'
 import { YouTubePlayer } from './YouTubePlayer'
 import { FootnotePreview } from './FootnotePreview'
 
+const robustClean = (text: string) => {
+  if (!text) return '';
+  // 1. Strip HTML tags
+  let cleaned = text.replace(/<[^>]*>?/gm, '');
+  
+  // 2. Aggressively strip leading numbers, symbols, and separators (recursive)
+  // More explicit character set for maximum compatibility
+  const noiseRegex = /^[0-9\s\u00A0\-\–\—\.\:\,\;\(\)\[\]\#\/\\]+/;
+  let last;
+  do {
+    last = cleaned;
+    cleaned = cleaned.replace(noiseRegex, '').trim();
+  } while (cleaned !== last);
+  return cleaned;
+};
+
+/**
+ * Recursively cleans the leading "noise" from a React node tree (spans, strings, fragments)
+ */
+const recursiveClean = (node: any): any => {
+  if (!node) return node;
+  
+  if (typeof node === 'string') {
+    return robustClean(node);
+  }
+  
+  if (Array.isArray(node)) {
+    // Only clean leading elements that are "noise"
+    const result = [...node];
+    for (let i = 0; i < result.length; i++) {
+        const leafText = getLeafText(result[i]);
+        const cleanedLeaf = robustClean(leafText);
+        
+        if (cleanedLeaf === '') {
+            // This entire node is just noise (like "1. "), skip it
+            result[i] = null;
+        } else {
+            // This node contains some content, clean just what it needs and STOP recursion
+            result[i] = recursiveClean(result[i]);
+            break;
+        }
+    }
+    return result.filter(n => n !== null);
+  }
+  
+  if (React.isValidElement(node)) {
+    const props = node.props as any;
+    if (props && props.children) {
+      return React.cloneElement(node, {
+        ...props,
+        children: recursiveClean(props.children)
+      });
+    }
+  }
+  
+  return node;
+};
+
 interface CitationData {
   _id: string;
   citationId: string;
@@ -73,24 +131,29 @@ const ReferenceItem = ({ children }: { children: any }) => {
   
   if (refMatch) {
     const refNumber = refMatch[1]
+    const cleanedChildren = recursiveClean(children)
     return (
       <div 
         id={`ref-${refNumber}`} 
         className="reference-item"
         style={{ scrollMarginTop: '100px' }}
       >
-        <a 
-          href={`#cite-ref-${refNumber}`}
-          className="back-link-to-citation"
-          title={`Voltar para citação ${refNumber}`}
-          style={{ 
-            color: 'inherit', 
-            textDecoration: 'none',
-            display: 'block'
-          }}
-        >
-          {children}
-        </a>
+        <div className="reference-line">
+          <a 
+            href={`#cite-ref-${refNumber}`}
+            className="back-link-to-citation"
+            title={`Voltar para citação ${refNumber}`}
+            style={{ 
+              color: 'var(--accent-color)', 
+              fontWeight: 'bold',
+              marginRight: '4px',
+              textDecoration: 'none'
+            }}
+          >
+            {refNumber} – 
+          </a>
+          <em>{cleanedChildren}</em>
+        </div>
       </div>
     )
   }
@@ -178,9 +241,12 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
         const content = group
           .map((item, j) => {
             if (isBreakOrEmpty(item)) return null;
-            const renderedItem = typeof item === 'string' ? <Citation>{item}</Citation> : item;
-            if (isBreakOrEmpty(renderedItem)) return null;
-            return <React.Fragment key={j}>{renderedItem}</React.Fragment>;
+            
+            // CLEAN THE FIRST ITEM if it's a string
+            const renderedItem = (j === 0) ? recursiveClean(item) : item;
+            const finalItem = typeof renderedItem === 'string' ? <Citation>{renderedItem}</Citation> : renderedItem;
+            if (isBreakOrEmpty(finalItem)) return null;
+            return <React.Fragment key={j}>{finalItem}</React.Fragment>;
           })
           .filter(Boolean);
 
@@ -271,7 +337,7 @@ const getComponents = (documentId?: string, isDraftMode?: boolean, citations?: C
             alt={value.alt || 'article image'}
             width={width}
             height={height}
-            className="rounded-lg shadow-sm mx-auto"
+            className="mx-auto"
             style={{ 
               maxWidth: maxWidth,
               width: isFullWidth ? '100%' : 'auto', 
