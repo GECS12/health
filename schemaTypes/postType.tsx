@@ -110,7 +110,21 @@ export const postType = defineType({
             {title: 'H1', value: 'h1'},
             {title: 'H2', value: 'h2'},
             {title: 'H3', value: 'h3'},
-            {title: 'Quote', value: 'blockquote'},
+            {
+              title: 'Quote', 
+              value: 'blockquote',
+              component: (props: any) => (
+                <blockquote style={{
+                  borderLeft: '4px solid #ccc', 
+                  paddingLeft: '1rem', 
+                  fontStyle: 'italic',
+                  color: '#666',
+                  margin: '1.5rem 0'
+                }}>
+                  {props.children}
+                </blockquote>
+              )
+            },
           ],
           lists: [{title: 'Bullet', value: 'bullet'}, {title: 'Number', value: 'number'}],
           marks: {

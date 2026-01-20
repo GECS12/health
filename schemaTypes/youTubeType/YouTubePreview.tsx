@@ -7,7 +7,7 @@ export function YouTubePreview(props: PreviewProps) {
   return (
     <Flex padding={3} align="center" justify="center">
       {typeof url === 'string' 
-        ? <ReactPlayer url={url} /> 
+        ? <ReactPlayer src={url} /> 
         : <Text>Add a YouTube URL</Text>}
     </Flex>
   )

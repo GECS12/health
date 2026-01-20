@@ -3,6 +3,7 @@ import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '../lib/sanity'
 import Image from 'next/image'
 import { EditButton } from './EditButton'
+import { YouTubePlayer } from './YouTubePlayer'
 
 const Citation = ({ children }: { children: any }) => {
   const text = Array.isArray(children) ? children[0] : children
@@ -260,129 +261,11 @@ const getComponents = (documentId?: string, isDraftMode?: boolean): PortableText
     },
     youTube: ({ value }) => {
       if (!value?.url) return null
-      
-      // Extract video ID from YouTube or Vimeo URLs
-      let embedUrl = ''
-      const url = value.url
-      
-      // YouTube patterns
-      const youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
-      if (youtubeMatch) {
-        embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}`
-      }
-      
-      // Vimeo patterns
-      const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/)
-      if (vimeoMatch) {
-        embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`
-      }
-      
-      if (!embedUrl) {
-        // If we can't parse it, just return the URL as a link
-        return (
-          <div className="my-8 text-center">
-            <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-              {value.caption || 'Watch Video'}
-            </a>
-          </div>
-        )
-      }
-      
-      return (
-        <figure className="my-10">
-          <div className="video-container" style={{
-            position: 'relative',
-            paddingBottom: '56.25%', /* 16:9 aspect ratio */
-            height: 0,
-            overflow: 'hidden',
-            maxWidth: '100%',
-            borderRadius: '8px'
-          }}>
-            <iframe
-              src={embedUrl}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                border: 0
-              }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={value.caption || 'Embedded video'}
-            />
-          </div>
-          {value.caption && (
-            <figcaption className="mt-4 text-sm text-gray-500 italic text-center">
-              {value.caption}
-            </figcaption>
-          )}
-        </figure>
-      )
+      return <YouTubePlayer url={value.url} caption={value.caption} />
     },
     video: ({ value }) => {
       if (!value?.url) return null
-      
-      // Extract video ID from YouTube or Vimeo URLs
-      let embedUrl = ''
-      const url = value.url
-      
-      // YouTube patterns
-      const youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
-      if (youtubeMatch) {
-        embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}`
-      }
-      
-      // Vimeo patterns
-      const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/)
-      if (vimeoMatch) {
-        embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`
-      }
-      
-      if (!embedUrl) {
-        // If we can't parse it, just return the URL as a link
-        return (
-          <div className="my-8 text-center">
-            <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-              {value.caption || 'Watch Video'}
-            </a>
-          </div>
-        )
-      }
-      
-      return (
-        <figure className="my-10">
-          <div className="video-container" style={{
-            position: 'relative',
-            paddingBottom: '56.25%', /* 16:9 aspect ratio */
-            height: 0,
-            overflow: 'hidden',
-            maxWidth: '100%',
-            borderRadius: '8px'
-          }}>
-            <iframe
-              src={embedUrl}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                border: 0
-              }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={value.caption || 'Embedded video'}
-            />
-          </div>
-          {value.caption && (
-            <figcaption className="mt-4 text-sm text-gray-500 italic text-center">
-              {value.caption}
-            </figcaption>
-          )}
-        </figure>
-      )
+      return <YouTubePlayer url={value.url} caption={value.caption} />
     },
   },
   block: {
@@ -406,7 +289,7 @@ const getComponents = (documentId?: string, isDraftMode?: boolean): PortableText
         return <CitationsWrapper isReference>{children}</CitationsWrapper>
       }
       
-      return <p><CitationsWrapper>{children}</CitationsWrapper></p>
+      return <div className="pt-paragraph"><CitationsWrapper>{children}</CitationsWrapper></div>
     },
     h1: ({ children }) => <h1>{children}</h1>,
     h2: ({ children, value }) => {
