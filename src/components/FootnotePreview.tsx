@@ -22,7 +22,7 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
       if (refElement) {
         // Clean up the text (remove the "1 –" prefix)
         const fullText = refElement.innerText;
-        const cleanedText = fullText.replace(/^\d+\s*[–\-\—\.\)]\s+/, '').trim();
+        const cleanedText = fullText.replace(/^\d+\s*[–\-\—\.\)]\s*/, '').trim();
         setLookupContent(cleanedText);
       }
     }
@@ -35,8 +35,8 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
       const scrollX = window.scrollX;
       
       setPosition({
-        top: rect.top + scrollY,
-        left: rect.left + scrollX + rect.width / 2,
+        top: rect.top,
+        left: rect.left + rect.width / 2,
       });
     }
   }, [isHovered]);
@@ -60,13 +60,13 @@ export function FootnotePreview({ children, content, index }: FootnotePreviewPro
             className="footnote-tooltip-content"
             style={{ 
               position: 'fixed',
-              top: position.top - 12, // Move up relative to trigger
+              top: position.top - 8, 
               left: position.left,
               transform: 'translate(-50%, -100%)',
+              zIndex: 9999,
               pointerEvents: 'none'
             }}
           >
-            <span className="footnote-index">{index}</span>
             {lookupContent}
           </motion.div>
         )}

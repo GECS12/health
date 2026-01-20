@@ -133,29 +133,30 @@
 
 .footnote-tooltip-content {
   position: absolute;
-  bottom: 100%;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 8px;
   width: max-content;
   max-width: 320px;
-  background: var(--bg-color);
+  background: white; /* Solid white for readability */
   padding: 12px 14px;
   border-radius: 8px;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-large);
-  z-index: 1000;
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
   font-family: var(--font-serif);
   font-size: 13px;
   line-height: 1.4;
-  color: var(--text-primary);
+  color: #1A1A1A;
   font-style: normal;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
 }
 
 [data-theme='dark'] .footnote-tooltip-content {
-  background: rgba(15, 15, 15, 0.95);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  background: #111111; /* Solid dark for readability */
+  border-color: #333333;
+  color: #EDEDED;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
 .footnote-tooltip-content .footnote-index {
@@ -848,6 +849,8 @@ a {
 .citation-link, .reference-link-inline {
   display: inline-block;
   min-width: 0.5ch;
+  margin: 0 1px;
+  padding: 0 1px;
 }
 
 .portable-text h1 {

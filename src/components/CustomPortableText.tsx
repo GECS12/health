@@ -26,15 +26,15 @@ const Citation = ({ children }: { children: any }) => {
   if (typeof text !== 'string') return children
 
   // Only match EXPLICIT bracketed citation patterns:
-  // e.g. "texto [1]" or "texto [1,2,3]"
-  const tokens = text.split(/(\[\d+(?:,\s*\d+)*\])/g)
+  // e.g. "texto [1]" or "texto [1, 2, 3]"
+  const tokens = text.split(/(\[\s*\d+(?:\s*,\s*\d+)*\s*\])/g)
   
   return tokens.map((token, i) => {
     // Check if it's a bracketed citation [1] or [1,2]
-    const bracketMatch = token.match(/^\[([\d+,\s*]+)\]$/)
+    const bracketMatch = token.match(/^\[\s*([\d\s,]+)\s*\]$/)
     if (bracketMatch) {
       const content = bracketMatch[1]
-      const nums = content.split(',').map(n => n.trim())
+      const nums = content.split(',').map(n => n.trim()).filter(Boolean)
       
       return (
         <span className="citation-wrapper" key={i}>
@@ -45,7 +45,7 @@ const Citation = ({ children }: { children: any }) => {
               content={null}
             >
               <span id={`cite-ref-${num}`} style={{ scrollMarginTop: '100px' }}>
-                {j > 0 && ','}
+                {j > 0 && ', '}
                 <a href={`#ref-${num}`} className="citation-link">
                   {num}
                 </a>
@@ -158,7 +158,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
   const groups: any[][] = [];
   nodes.forEach(node => {
     const text = getLeafText(node);
-    const isNewRef = text.match(/^\d+\s*[–\-\—\.\)]\s+/);
+    const isNewRef = text.match(/^\d+\s*[–\-\—\.\)]\s*/);
     
     if (isNewRef || groups.length === 0) {
       groups.push([node]);
@@ -188,7 +188,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
 
         if (refNumber) {
           // Extract the separator used (usually ' –' or '.')
-          const match = firstText.match(/^\d+\s*([–\-\—\.\)])\s+/);
+          const match = firstText.match(/^\d+\s*([–\-\—\.\)])\s*/);
           const separatorChar = match ? match[1] : '–';
           
           return (
