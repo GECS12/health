@@ -11,6 +11,7 @@ import { Comments } from '@/components/Comments'
 import { Bibliography } from '@/components/Bibliography'
 import { EditButton } from '@/components/EditButton'
 import { MarkAsRead } from '@/components/MarkAsRead'
+import { PreFetchNavigation } from '@/components/PreFetchNavigation'
 
 
 interface ArticleProps {
@@ -106,6 +107,11 @@ export default async function ArticlePage({ params }: ArticleProps) {
         )}
 
         <MarkAsRead slug={slug} />
+
+        <PreFetchNavigation 
+          prevSlug={prevArticle?.slug} 
+          nextSlug={nextArticle?.slug} 
+        />
 
         <Comments postId={article._id} />
         

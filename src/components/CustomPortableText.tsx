@@ -156,7 +156,7 @@ const CitationsWrapper = ({ children, isReference }: { children: any, isReferenc
             if (isBreakOrEmpty(item)) return null;
             const renderedItem = typeof item === 'string' ? <Citation>{item}</Citation> : item;
             if (isBreakOrEmpty(renderedItem)) return null;
-            return <div key={j} className="reference-line">{renderedItem}</div>;
+            return <div key={j} className="reference-line"><em>{renderedItem}</em></div>;
           })
           .filter(Boolean);
 
@@ -317,7 +317,7 @@ const components: PortableTextComponents = {
       const isReference = text.match(/^\d+\s*[–\-\—\.\)]\s+/)
       
       if (isReference) {
-        return <div className="references-group"><CitationsWrapper isReference>{children}</CitationsWrapper></div>
+        return <CitationsWrapper isReference>{children}</CitationsWrapper>
       }
       
       return <p><CitationsWrapper>{children}</CitationsWrapper></p>

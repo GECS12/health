@@ -38,68 +38,38 @@ export function Bibliography({ citations }: BibliographyProps) {
         <h2>Referências</h2>
       </div>
       
-      <ol className="bibliography-list">
+      <div className="references-group">
         {citations.map((citation, index) => (
-          <li 
+          <div 
             key={citation._id} 
-            id={`ref-${citation._id}`}
-            className="bibliography-item"
+            id={`ref-${index + 1}`}
+            className="reference-item"
+            style={{ scrollMarginTop: '100px' }}
           >
-            <span className="bibliography-number">{index + 1}.</span>
-            <div className="bibliography-content">
-              <span className="bibliography-authors">{formatAuthors(citation.authors)}</span>
-              {' '}
-              <span className="bibliography-year">({citation.year}).</span>
-              {' '}
-              <span className="bibliography-title">{citation.title}.</span>
-              {' '}
-              {citation.source && (
-                <>
-                  <span className="bibliography-source">{citation.source}</span>
-                  {citation.volume && <>, {citation.volume}</>}
-                  {citation.issue && <>({citation.issue})</>}
-                  {citation.pages && <>, {citation.pages}</>}
-                  .
-                </>
-              )}
-              
-              {/* Back to reading position link */}
-              <a 
-                href={`#cite-ref-${index + 1}`} 
-                aria-label="Voltar para a citação no texto"
-                className="bibliography-back-link"
-                style={{ 
-                  color: 'var(--accent-color)', 
-                  marginLeft: '8px', 
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  display: 'inline-block'
-                }}
-              >
-                ↩
-              </a>
-              {citation.doi && (
-                <div className="bibliography-doi">
-                  DOI: <a href={`https://doi.org/${citation.doi}`} target="_blank" rel="noopener noreferrer">
-                    {citation.doi}
-                  </a>
-                </div>
-              )}
-              {citation.url && !citation.doi && (
-                <div className="bibliography-url">
-                  <a href={citation.url} target="_blank" rel="noopener noreferrer" className="bibliography-link">
-                    <ExternalLink size={14} />
-                    <span>Acesso ao artigo</span>
-                  </a>
-                </div>
-              )}
-              {citation.notes && (
-                <div className="bibliography-notes">{citation.notes}</div>
-              )}
-            </div>
-          </li>
+            <a 
+              href={`#cite-ref-${index + 1}`} 
+              className="back-link-to-citation" 
+              title={`Voltar para citação ${index + 1}`}
+              style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}
+            >
+              <div className="reference-line">
+                <em>
+                  {index + 1} – {formatAuthors(citation.authors)}. {citation.title}. {' '}
+                  {citation.source && (
+                    <>
+                      {citation.source}
+                      {citation.volume && <>; {citation.volume}</>}
+                      {citation.issue && <>({citation.issue})</>}
+                      {citation.pages && <>: {citation.pages}</>}
+                      .
+                    </>
+                  )}
+                </em>
+              </div>
+            </a>
+          </div>
         ))}
-      </ol>
+      </div>
     </section>
   );
 }

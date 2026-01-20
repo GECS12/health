@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
+import { SidebarStateProvider, useSidebarState } from '@/context/SidebarStateContext';
+import { FontSizeControl } from './FontSizeControl';
 
 interface Post {
   title: string;
@@ -61,7 +63,71 @@ interface Section {
   posts: Post[];
 }
 
+// Flatten tree to get all Section IDs for initial expanding
+const getAllSectionIds = (sections: Section[]): string[] => {
+  let ids: string[] = [];
+  sections.forEach(sec => {
+    ids.push(sec._id);
+    if (sec.subSections) {
+      ids = ids.concat(getAllSectionIds(sec.subSections));
+    }
+  });
+  return ids;
+};
+
+// Check if a section or its children *contains* any read posts
+const sectionHasReadContent = (section: Section, isRead: (slug: string) => boolean): boolean => {
+  // Check direct posts
+  if (section.posts.some(p => isRead(p.slug))) return true;
+  // Check subsections
+  return section.subSections.some(sub => sectionHasReadContent(sub, isRead));
+};
+
+function SidebarControls({ tree }: { tree: Section[] }) {
+  const { collapseAll, setExpandedSections, expandedSections } = useSidebarState();
+
+  const allSectionIds = getAllSectionIds(tree);
+  const isExpanded = expandedSections.size >= allSectionIds.length * 0.5; // More than half expanded
+
+  const handleToggle = () => {
+    if (isExpanded) {
+      collapseAll();
+    } else {
+      setExpandedSections(new Set(allSectionIds));
+    }
+  };
+
+  return (
+    <div className="sidebar-controls-row">
+      <FontSizeControl />
+      <button onClick={handleToggle} className="sidebar-text-btn">
+        {isExpanded ? 'Collapse' : 'Expand'}
+      </button>
+    </div>
+  );
+}
+
 export function SidebarContent({ tree }: { tree: Section[] }) {
+  return (
+    <SidebarStateProvider>
+      <SidebarContentInner tree={tree} />
+    </SidebarStateProvider>
+  );
+}
+
+function SidebarContentInner({ tree }: { tree: Section[] }) {
+  const { setExpandedSections, expandedSections } = useSidebarState();
+
+  // Initialize all open on mount (only once)
+  useEffect(() => {
+    // Only if empty (fresh load), though this might conflict if user clicked "Collapse All" then refreshed?
+      // Actually state is not persisted, so fresh load is always empty.
+    // So we default to open.
+    if (expandedSections.size === 0) {
+      setExpandedSections(new Set(getAllSectionIds(tree)));
+    }
+  }, []); // Run once
+
   return (
     <nav className="sidebar-nav">
       <div className="section-group">
@@ -69,6 +135,9 @@ export function SidebarContent({ tree }: { tree: Section[] }) {
           <span className="section-title-text">HEALTH & NUTRITION</span>
         </Link>
       </div>
+
+      <SidebarControls tree={tree} />
+
       {tree.map(section => (
         <SectionView key={section._id} section={section} depth={0} />
       ))}
@@ -77,14 +146,15 @@ export function SidebarContent({ tree }: { tree: Section[] }) {
 }
 
 function SectionView({ section, depth }: { section: Section; depth: number }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const { expandedSections, toggleSection } = useSidebarState();
+  const isOpen = expandedSections.has(section._id);
   const hasContent = section.posts.length > 0 || section.subSections.length > 0;
 
   return (
     <div className="section-group">
       <button 
         className={`section-label depth-${depth} ${hasContent ? 'has-children' : ''} ${isOpen ? 'is-open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => toggleSection(section._id)}
         aria-expanded={isOpen}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -127,3 +197,4 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
     </div>
   );
 }
+
