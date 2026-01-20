@@ -2068,23 +2068,6 @@ a {
   padding: 0 20px;
 }
 
-.landing-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 96px;
-  background: var(--active-bg);
-  border-radius: 50%;
-  color: var(--accent-color);
-  margin-bottom: 32px;
-  transition: all var(--transition-elegant);
-}
-
-.landing-icon:hover {
-  transform: scale(1.05);
-  background: var(--accent-warm-light);
-}
 
 .landing-title {
   font-family: var(--font-serif);

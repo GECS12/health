@@ -1,6 +1,6 @@
 import { getNavigationTree } from '../../lib/navigation'
 import Link from 'next/link'
-import { Book, ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, Sparkles } from 'lucide-react'
 import { ScrollReveal } from '../../components/ScrollReveal'
 
 // Revalidate immediately (Dynamic)
@@ -16,9 +16,6 @@ export default async function Home() {
     <div className="landing-page">
       <ScrollReveal>
         <header className="landing-hero">
-          <div className="landing-icon">
-            <Book size={48} strokeWidth={1.5} />
-          </div>
           <h1 className="landing-title">Saúde, Medicina e Ciência</h1>
           <p className="landing-subtitle">
             Uma jornada abrangente através da medicina moderna, nutrição baseada em evidências e ciência da saúde.
