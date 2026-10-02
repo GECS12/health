@@ -3,7 +3,7 @@ import { getLandingPage } from '../../lib/landingPage'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { ScrollReveal } from '../../components/ScrollReveal'
-import { PortableText } from '@portabletext/react'
+import { CustomPortableText } from '../../components/CustomPortableText'
 
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60
@@ -23,7 +23,7 @@ export default async function Home() {
         <section className="landing-preamble max-w-2xl mx-auto px-6 pt-16 pb-32 text-center">
           {landing.preamble && landing.preamble.length > 0 && (
             <div className="prose prose-stone prose-lg mx-auto font-serif text-stone-700 leading-loose mb-12">
-              <PortableText value={landing.preamble} />
+              <CustomPortableText value={landing.preamble} />
             </div>
           )}
 

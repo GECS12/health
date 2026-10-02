@@ -36,8 +36,35 @@ export const landingPageType = defineType({
             annotations: [],
           },
         },
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+            },
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alt Text',
+            },
+            {
+              name: 'imageWidth',
+              type: 'number',
+              title: 'Image Width (%)',
+              description: 'Width as a percentage of the content area.',
+              validation: (rule) => rule.min(10).max(100),
+              initialValue: 100,
+              options: {
+                range: {min: 10, max: 100, step: 5},
+              },
+            },
+          ],
+        },
       ],
-      description: 'The paragraphs shown below the title on the home page',
+      description: 'Paragraphs and images shown on the home page',
     }),
     defineField({
       name: 'ctaLabel',
