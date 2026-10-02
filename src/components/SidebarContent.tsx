@@ -98,15 +98,31 @@ function SidebarControls({ tree }: { tree: Section[] }) {
   );
 }
 
-export function SidebarContent({ tree }: { tree: Section[] }) {
+export function SidebarContent({
+  tree,
+  siteTitle,
+  siteAuthor,
+}: {
+  tree: Section[];
+  siteTitle: string;
+  siteAuthor?: string;
+}) {
   return (
     <SidebarStateProvider>
-      <SidebarContentInner tree={tree} />
+      <SidebarContentInner tree={tree} siteTitle={siteTitle} siteAuthor={siteAuthor} />
     </SidebarStateProvider>
   );
 }
 
-function SidebarContentInner({ tree }: { tree: Section[] }) {
+function SidebarContentInner({
+  tree,
+  siteTitle,
+  siteAuthor,
+}: {
+  tree: Section[];
+  siteTitle: string;
+  siteAuthor?: string;
+}) {
   const { setExpandedSections, expandedSections } = useSidebarState();
 
   // Initialize all open on mount (only once)
@@ -123,7 +139,10 @@ function SidebarContentInner({ tree }: { tree: Section[] }) {
     <nav className="sidebar-nav">
       <div className="section-group">
         <Link href="/" className="home-link sidebar-branding">
-          <span className="section-title-text">SAÚDE E NUTRIÇÃO</span>
+          <span className="section-title-text">{siteTitle}</span>
+          {siteAuthor ? (
+            <span className="sidebar-branding-author">{siteAuthor}</span>
+          ) : null}
         </Link>
       </div>
 

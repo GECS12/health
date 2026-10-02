@@ -106,13 +106,13 @@
 
 .sidebar-branding {
   display: flex !important;
+  flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
   padding: 24px 20px 20px 20px !important;
   font-family: var(--font-serif);
   font-size: 32px !important;
   font-weight: 900 !important;
-  text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--text-primary) !important;
   border-bottom: 2px solid var(--accent-light);
@@ -122,6 +122,21 @@
   line-height: 1.1;
   background-color: transparent !important; /* Ensure no background */
   text-align: center;
+  gap: 6px;
+}
+
+.sidebar-branding .section-title-text {
+  text-transform: uppercase;
+}
+
+.sidebar-branding-author {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text-secondary) !important;
+  line-height: 1.3;
 }
 
 /* Footnote Tooltip Styles */

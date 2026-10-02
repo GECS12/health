@@ -20,18 +20,7 @@ export default async function Home() {
   return (
     <div className="landing-page relative overflow-hidden">
       <ScrollReveal>
-        <header className="landing-hero flex flex-col items-center justify-center text-center pt-24 pb-6 px-4 relative z-10">
-          <h1 className="landing-title text-5xl md:text-7xl font-serif text-stone-900 mb-4 tracking-tight leading-none uppercase">
-            {landing.title}
-          </h1>
-          {landing.author && (
-            <p className="landing-subtitle text-lg text-stone-500 max-w-xl mx-auto font-serif italic mb-0">
-              {landing.author}
-            </p>
-          )}
-        </header>
-
-        <section className="landing-preamble max-w-2xl mx-auto px-6 pb-32 text-center">
+        <section className="landing-preamble max-w-2xl mx-auto px-6 pt-16 pb-32 text-center">
           {landing.preamble && landing.preamble.length > 0 && (
             <div className="prose prose-stone prose-lg mx-auto font-serif text-stone-700 leading-loose mb-12">
               <PortableText value={landing.preamble} />
