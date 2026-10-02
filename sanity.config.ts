@@ -19,6 +19,18 @@ export default defineConfig({
         S.list()
           .title('Content Hierarchy')
           .items([
+            // Landing page (singleton)
+            S.listItem()
+              .title('Landing Page')
+              .id('landingPage')
+              .child(
+                S.document()
+                  .schemaType('landingPage')
+                  .documentId('landingPage')
+                  .title('Landing Page')
+              ),
+            S.divider(),
+
             // 1. Chapters (Sections)
             S.listItem()
               .title('Chapters & Articles')
@@ -67,9 +79,9 @@ export default defineConfig({
                   .defaultOrdering([{field: 'order', direction: 'asc'}])
               ),
 
-            // Filter out types we've already handled
+            // Filter out types we've already handled (incl. singleton)
             ...S.documentTypeListItems().filter(
-              (listItem) => !['post', 'section'].includes(listItem.getId() || '')
+              (listItem) => !['post', 'section', 'landingPage'].includes(listItem.getId() || '')
             ),
           ])
     }),
