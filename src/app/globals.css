@@ -132,6 +132,13 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  padding: clamp(12px, 2vw, 24px) clamp(8px, 1.5vw, 20px) !important;
+  font-size: clamp(18px, 2.2vw, 32px) !important;
+  letter-spacing: clamp(0.06em, 0.12vw, 0.15em);
+}
+
+.header-branding .sidebar-branding-author {
+  font-size: clamp(12px, 1.2vw, 16px) !important;
 }
 
 .sidebar-branding .section-title-text {
@@ -636,6 +643,8 @@ a {
   background: rgba(0, 0, 0, 0.03);
   border-radius: 6px;
   margin-right: 0;
+  flex-wrap: nowrap;
+  max-width: 100%;
 }
 
 .font-control-group {
@@ -1099,6 +1108,36 @@ a {
 @media (max-width: 1280px) {
   :root { --toc-width: 240px; --sidebar-width: 280px; }
   .main-content { padding: 40px 40px; }
+
+  .search-text {
+    display: none;
+  }
+
+  .toc-top-actions {
+    width: auto;
+    min-width: 0;
+  }
+
+  .font-control-group .scale-display {
+    display: none;
+  }
+
+  .font-size-controls {
+    gap: 4px;
+    padding: 4px 6px;
+  }
+}
+
+@media (max-width: 1180px) {
+  :root { --sidebar-width: 240px; }
+
+  .header-toolbar {
+    gap: 10px;
+  }
+
+  .search-trigger-shortcut {
+    display: none;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -1141,11 +1180,13 @@ a {
 }
 
 .header-toolbar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  padding: 0 40px;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 24px);
+  padding: 0 clamp(16px, 3vw, 40px);
   min-height: 96px;
+  min-width: 0;
   background: var(--bg-color);
 }
 
@@ -1161,15 +1202,17 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  grid-column: 2;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .header-right-container {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  grid-column: 3;
+  flex: 0 0 auto;
   gap: 12px;
+  min-width: 0;
 }
 
 .header-left {
@@ -1186,7 +1229,10 @@ a {
   border-radius: 14px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-medium);
-  width: 675px; /* Increased to 1.5x of 450px as requested */
+  width: min(675px, 100%);
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Dark mode specific pill override */
@@ -1228,6 +1274,10 @@ a {
   font-family: var(--font-sans);
   font-size: 13px;
   opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .search-trigger-shortcut {
@@ -1824,18 +1874,26 @@ a {
   font-size: 11px;
   font-weight: 600;
 }
-.toc-top-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
 .toc-top-actions .search-trigger {
   flex: 1;
   margin-bottom: 0;
   width: auto;
   padding: 0 12px;
+}
+
+/* TOC panel actions (not the header search pill) */
+.toc .toc-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  width: auto;
+  max-width: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
 }
 
 .theme-toggle-desktop {
