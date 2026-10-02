@@ -1,5 +1,6 @@
 import {defineField, defineType} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
+import {PasteableImagesInput} from '../src/studio/PasteableImagesInput'
 
 export const landingPageType = defineType({
   name: 'landingPage',
@@ -42,7 +43,10 @@ export const landingPageType = defineType({
         },
       ],
       description:
-        'Click an image slot, then paste (Ctrl+V / Cmd+V) from clipboard, or upload. Shown above the intro text.',
+        'Click the dashed box below, then paste (Ctrl+V / Cmd+V) or drop images. No need to open the image picker.',
+      components: {
+        input: PasteableImagesInput,
+      },
     }),
     defineField({
       name: 'preamble',
@@ -90,7 +94,7 @@ export const landingPageType = defineType({
         },
       ],
       description:
-        'Paragraphs and inline images. Tip: for easy paste, use the Images field above instead.',
+        'Paragraphs and inline images. For easy paste, use the Images field above instead.',
     }),
     defineField({
       name: 'ctaLabel',
