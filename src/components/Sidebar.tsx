@@ -1,20 +1,20 @@
-import { getNavigationTree } from '@/lib/navigation'
-import { getLandingPage } from '@/lib/landingPage'
 import { SidebarContent } from './SidebarContent'
-import { SearchTrigger } from './SearchModal'
 
-export async function Sidebar() {
-  const [tree, landing] = await Promise.all([
-    getNavigationTree(),
-    getLandingPage(),
-  ])
-
+export function Sidebar({
+  tree,
+  siteTitle,
+  siteAuthor,
+}: {
+  tree: any[]
+  siteTitle: string
+  siteAuthor?: string
+}) {
   return (
     <div className="sidebar-container">
       <SidebarContent
         tree={tree}
-        siteTitle={landing.title}
-        siteAuthor={landing.author}
+        siteTitle={siteTitle}
+        siteAuthor={siteAuthor}
       />
     </div>
   )

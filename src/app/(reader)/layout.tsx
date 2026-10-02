@@ -1,25 +1,34 @@
+import { getNavigationTree } from '../../lib/navigation'
+import { getLandingPage } from '../../lib/landingPage'
 import { Sidebar } from '../../components/Sidebar'
-import { Header } from '../../components/Header'
 import { TableOfContents } from '../../components/TableOfContents'
 import { BackToTop } from '../../components/BackToTop'
 import { ArticleNavigation } from '../../components/ArticleNavigation'
 import { AdminEdit } from '../../components/AdminEdit'
-import { SearchModal, SearchTrigger } from '../../components/SearchModal'
 import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { SkipToContent } from '../../components/SkipToContent'
 import { ArrowUpRight } from 'lucide-react'
 import { MobileMenuProvider } from '@/context/MobileMenuContext'
-import { MobileMenuWrapper } from '@/components/MobileMenuWrapper'
+import { ReaderShell } from '@/components/ReaderShell'
 import '../globals.css'
 
-import { ThemeToggle } from '../../components/ThemeToggle'
-
-export default function ReaderLayout({
+export default async function ReaderLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const sidebar = <Sidebar />;
+  const [tree, landing] = await Promise.all([
+    getNavigationTree(),
+    getLandingPage(),
+  ])
+
+  const sidebar = (
+    <Sidebar
+      tree={tree}
+      siteTitle={landing.title}
+      siteAuthor={landing.author}
+    />
+  )
   const toc = (
     <>
       <div className="toc-header-group-minimal">
@@ -40,13 +49,16 @@ export default function ReaderLayout({
     <MobileMenuProvider>
       <SkipToContent />
       <ProgressIndicator />
-      <Header />
-      <SearchModal />
-      <MobileMenuWrapper sidebar={sidebar} toc={toc}>
+      <ReaderShell
+        tree={tree}
+        siteTitle={landing.title}
+        siteAuthor={landing.author}
+        sidebar={sidebar}
+        toc={toc}
+      >
         {children}
-      </MobileMenuWrapper>
+      </ReaderShell>
       <BackToTop />
     </MobileMenuProvider>
   )
 }
-

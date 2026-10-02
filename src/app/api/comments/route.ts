@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
 
+const token = process.env.SANITY_API_TOKEN || process.env.SANITY_API_WRITE_TOKEN
+
 // Create a write-enabled client for API routes
 const writeClient = createClient({
   projectId: 'd8l1kuhs',
   dataset: 'production',
   apiVersion: '2024-01-01',
   useCdn: false,
-  token: process.env.SANITY_API_TOKEN, // Optional: add token for write access if needed
+  token,
 })
 
 // Read-only client for fetching
@@ -20,6 +22,17 @@ const readClient = createClient({
 
 export async function POST(request: NextRequest) {
   try {
+    if (!token) {
+      console.error('Missing SANITY_API_TOKEN / SANITY_API_WRITE_TOKEN')
+      return NextResponse.json(
+        {
+          error:
+            'Comments are not configured: missing Sanity write token on the server.',
+        },
+        { status: 503 }
+      )
+    }
+
     const body = await request.json()
     const { author, email, content, postId, parentCommentId } = body
 
@@ -73,9 +86,15 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error creating comment:', error)
     const errorMessage = error?.message || 'Failed to submit comment'
+    const isPermission =
+      typeof errorMessage === 'string' &&
+      errorMessage.toLowerCase().includes('insufficient permissions')
+
     return NextResponse.json(
       { 
-        error: errorMessage,
+        error: isPermission
+          ? 'Sanity token cannot create comments. Use an Editor (or write) token in SANITY_API_TOKEN.'
+          : errorMessage,
         details: process.env.NODE_ENV === 'development' ? error?.stack : undefined
       },
       { status: 500 }

@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
-import { SidebarStateProvider, useSidebarState } from '@/context/SidebarStateContext';
-import { FontSizeControl } from './FontSizeControl';
+import { useSidebarState } from '@/context/SidebarStateContext';
 
 interface Post {
   title: string;
@@ -30,10 +29,8 @@ const toRoman = (num: number): string => {
 };
 
 const formatTitle = (str: string) => {
-  // Handle Roman numerals or specific acronyms if needed
   if (/^[XIV]+$/.test(str)) return str;
 
-  // Specific replacements for "PartX" and "CapX"
   const partMatch = str.match(/^Part\s*(\d+)$/i);
   if (partMatch) {
     return `Parte ${toRoman(parseInt(partMatch[1], 10))}`;
@@ -44,12 +41,10 @@ const formatTitle = (str: string) => {
     return `Capítulo ${capMatch[1]}`;
   }
   
-  // Normalize casing: lowercase first, then capitalize words
   return str
     .toLowerCase()
     .split(' ')
     .map(word => {
-      // Keep roman numerals uppercase if they appear (simple check)
       if (/^(ii|iii|iv|vi|vii|viii|ix|xi)$/i.test(word)) return word.toUpperCase();
       return word.charAt(0).toUpperCase() + word.slice(1);
     })
@@ -63,7 +58,6 @@ interface Section {
   posts: Post[];
 }
 
-// Flatten tree to get all Section IDs for initial expanding
 const getAllSectionIds = (sections: Section[]): string[] => {
   let ids: string[] = [];
   sections.forEach(sec => {
@@ -75,46 +69,7 @@ const getAllSectionIds = (sections: Section[]): string[] => {
   return ids;
 };
 
-
-
-function SidebarControls({ tree }: { tree: Section[] }) {
-  const { collapseAll, setExpandedSections, expandedSections } = useSidebarState();
-
-  const allSectionIds = getAllSectionIds(tree);
-  const isExpanded = expandedSections.size >= allSectionIds.length * 0.5; // More than half expanded
-
-  const handleToggle = () => {
-    if (isExpanded) {
-      collapseAll();
-    } else {
-      setExpandedSections(new Set(allSectionIds));
-    }
-  };
-
-  return (
-    <div className="sidebar-controls-row">
-      <FontSizeControl onToggle={handleToggle} isExpanded={isExpanded} />
-    </div>
-  );
-}
-
 export function SidebarContent({
-  tree,
-  siteTitle,
-  siteAuthor,
-}: {
-  tree: Section[];
-  siteTitle: string;
-  siteAuthor?: string;
-}) {
-  return (
-    <SidebarStateProvider>
-      <SidebarContentInner tree={tree} siteTitle={siteTitle} siteAuthor={siteAuthor} />
-    </SidebarStateProvider>
-  );
-}
-
-function SidebarContentInner({
   tree,
   siteTitle,
   siteAuthor,
@@ -125,11 +80,7 @@ function SidebarContentInner({
 }) {
   const { setExpandedSections, expandedSections } = useSidebarState();
 
-  // Initialize all open on mount (only once)
   useEffect(() => {
-    // Only if empty (fresh load), though this might conflict if user clicked "Collapse All" then refreshed?
-      // Actually state is not persisted, so fresh load is always empty.
-    // So we default to open.
     if (expandedSections.size === 0) {
       setExpandedSections(new Set(getAllSectionIds(tree)));
     }
@@ -137,7 +88,8 @@ function SidebarContentInner({
 
   return (
     <nav className="sidebar-nav">
-      <div className="section-group">
+      {/* Branding only in the mobile drawer — desktop branding lives in the top header */}
+      <div className="section-group mobile-only sidebar-mobile-brand">
         <Link href="/" className="home-link sidebar-branding">
           <span className="section-title-text">{siteTitle}</span>
           {siteAuthor ? (
@@ -146,11 +98,11 @@ function SidebarContentInner({
         </Link>
       </div>
 
-      <SidebarControls tree={tree} />
-
-      {tree.map(section => (
-        <SectionView key={section._id} section={section} depth={0} />
-      ))}
+      <div className="sidebar-nav-sections">
+        {tree.map(section => (
+          <SectionView key={section._id} section={section} depth={0} />
+        ))}
+      </div>
     </nav>
   );
 }
@@ -207,4 +159,3 @@ function SectionView({ section, depth }: { section: Section; depth: number }) {
     </div>
   );
 }
-

@@ -46,7 +46,7 @@ export function MobileMenuWrapper({
 
       {/* Desktop Sidebar */}
       <aside className="sidebar desktop-only">
-        <ScrollArea className="h-[calc(100vh-1px)]">
+        <ScrollArea className="h-full">
           {sidebar}
         </ScrollArea>
       </aside>
