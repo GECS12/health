@@ -1,6 +1,7 @@
 import { getNavigationTree } from '../../lib/navigation'
-import { getLandingPage } from '../../lib/landingPage'
+import { getLandingPage, landingImageUrl } from '../../lib/landingPage'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { ScrollReveal } from '../../components/ScrollReveal'
 import { CustomPortableText } from '../../components/CustomPortableText'
@@ -21,6 +22,33 @@ export default async function Home() {
     <div className="landing-page relative overflow-hidden">
       <ScrollReveal>
         <section className="landing-preamble max-w-2xl mx-auto px-6 pt-16 pb-32 text-center">
+          {landing.images && landing.images.length > 0 && (
+            <div className="mb-12 space-y-8">
+              {landing.images.map((image, index) => {
+                const src = landingImageUrl(image)
+                if (!src) return null
+                return (
+                  <figure key={image._key || index} className="mx-auto">
+                    <Image
+                      src={src}
+                      alt={image.alt || ''}
+                      width={1200}
+                      height={800}
+                      className="mx-auto h-auto w-full max-w-full"
+                      sizes="(max-width: 672px) 100vw, 672px"
+                      priority={index === 0}
+                    />
+                    {image.caption && (
+                      <figcaption className="mt-3 text-sm italic text-stone-500">
+                        {image.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                )
+              })}
+            </div>
+          )}
+
           {landing.preamble && landing.preamble.length > 0 && (
             <div className="prose prose-stone prose-lg mx-auto font-serif text-stone-700 leading-loose mb-12">
               <CustomPortableText value={landing.preamble} />

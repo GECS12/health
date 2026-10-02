@@ -1,8 +1,16 @@
-import { client } from './sanity'
+import { client, urlFor } from './sanity'
+
+export interface LandingImage {
+  asset?: { _ref?: string; _id?: string }
+  alt?: string
+  caption?: string
+  [key: string]: any
+}
 
 export interface LandingPage {
   title: string
   author?: string
+  images?: LandingImage[]
   preamble?: any[]
   ctaLabel?: string
 }
@@ -10,6 +18,7 @@ export interface LandingPage {
 const FALLBACK: LandingPage = {
   title: 'Realidade',
   author: 'David Leão',
+  images: [],
   preamble: [
     {
       _type: 'block',
@@ -48,6 +57,7 @@ export async function getLandingPage(): Promise<LandingPage> {
     `*[_type == "landingPage" && _id == "landingPage"][0]{
       title,
       author,
+      images,
       preamble,
       ctaLabel
     }`
@@ -58,7 +68,13 @@ export async function getLandingPage(): Promise<LandingPage> {
   return {
     title: data.title,
     author: data.author ?? FALLBACK.author,
+    images: data.images?.length ? data.images : [],
     preamble: data.preamble?.length ? data.preamble : FALLBACK.preamble,
     ctaLabel: data.ctaLabel || FALLBACK.ctaLabel,
   }
+}
+
+export function landingImageUrl(image: LandingImage) {
+  if (!image?.asset?._ref && !image?.asset?._id) return null
+  return urlFor(image).width(1200).url()
 }

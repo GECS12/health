@@ -20,6 +20,31 @@ export const landingPageType = defineType({
       description: 'Shown under the title (e.g. author name)',
     }),
     defineField({
+      name: 'images',
+      title: 'Images',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alt Text',
+            },
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+            },
+          ],
+        },
+      ],
+      description:
+        'Click an image slot, then paste (Ctrl+V / Cmd+V) from clipboard, or upload. Shown above the intro text.',
+    }),
+    defineField({
       name: 'preamble',
       title: 'Intro text',
       type: 'array',
@@ -64,7 +89,8 @@ export const landingPageType = defineType({
           ],
         },
       ],
-      description: 'Paragraphs and images shown on the home page',
+      description:
+        'Paragraphs and inline images. Tip: for easy paste, use the Images field above instead.',
     }),
     defineField({
       name: 'ctaLabel',
