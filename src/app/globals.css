@@ -719,7 +719,7 @@ a {
   overflow-y: auto;
   scroll-behavior: smooth;
   background-color: var(--bg-color);
-  padding: 48px 64px 96px;
+  padding: 16px 64px 96px;
   display: flex;
   justify-content: center;
   position: relative;
@@ -743,7 +743,7 @@ a {
   color: var(--text-primary);
   letter-spacing: -0.02em;
   font-weight: 500;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
   line-height: 1.2;
   text-align: center;
 }
@@ -754,7 +754,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
   font-family: var(--font-sans);
   font-size: 13px;
   text-transform: uppercase;
@@ -795,8 +795,13 @@ a {
   width: 60px;
   height: 1px;
   background: var(--accent-color);
-  margin: 0 auto 48px;
+  margin: 0 auto 24px;
   opacity: 0.5;
+}
+
+.article-header {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .breadcrumb-item {
@@ -1107,7 +1112,7 @@ a {
 /* Responsive */
 @media (max-width: 1280px) {
   :root { --toc-width: 240px; --sidebar-width: 280px; }
-  .main-content { padding: 40px 40px; }
+  .main-content { padding: 16px 40px 40px; }
 
   .search-text {
     display: none;
@@ -1311,12 +1316,12 @@ a {
   }
 
   .main-content {
-    padding: 100px 20px 60px !important; /* Reduced padding for mobile */
+    padding: 16px 20px 60px !important;
   }
 
   .article-title {
     font-size: 32px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     padding: 0 10px;
   }
 
@@ -1431,7 +1436,7 @@ a {
   }
 
   .main-content { 
-    padding: 24px 20px; /* Reduced top padding */
+    padding: 12px 20px 24px;
     max-width: 100vw;
     overflow-x: hidden;
   }
